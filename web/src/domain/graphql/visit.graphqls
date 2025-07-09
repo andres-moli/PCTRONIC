@@ -1,0 +1,236 @@
+mutation CreateVisit($createInput: CreateVisitInput!) {
+  createVisit(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateVisit($updateInput: UpdateVisitInput!) {
+  updateVisit(updateInput: $updateInput) {
+    id
+  }
+}
+query Visits($where: FindVisitWhere, $orderBy: [FindVisitOrderBy!], $pagination: Pagination) {
+  visits(where: $where, orderBy: $orderBy, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    location
+    latitude
+    longitude
+    dateVisit
+    mocked
+    status
+    visitItem {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      description
+      type
+      location
+      latitude
+      longitude
+      dateFull
+      mocked
+      file {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        fileName
+        fileExtension
+        fileMode
+        fileMongoId
+        fileUrl
+        url
+      }
+    }
+    user {
+      id
+      identificationNumber
+      identificationType
+      fullName
+      email
+    }
+        type {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+    }
+  }
+  visitsCount(where: $where, orderBy: $orderBy, pagination: $pagination)  {
+    totalItems
+    itemsPerPage
+    totalPages
+    currentPage
+  }
+}
+query VisitFindOneArg($where: FindVisitWhere) {
+  visitFindOneArg(where: $where) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    location
+    latitude
+    longitude
+    dateVisit
+    mocked
+    status
+    visitItem {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      description
+      type
+      location
+      latitude
+      longitude
+      dateFull
+      mocked
+      file {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        fileName
+        fileExtension
+        fileMode
+        fileMongoId
+        fileUrl
+        url
+      }
+    }
+    user {
+      id
+      identificationNumber
+      identificationType
+      fullName
+      email
+    }
+  }
+}
+mutation FinishVisit($updateStatusInput: UpdateStatusInput!) {
+  finishVisit(UpdateStatusInput: $updateStatusInput) {
+    id
+  }
+}
+mutation CreateVisitComent($createInput: CreateVisitComentInput!) {
+  createVisitComent(createInput: $createInput) {
+    id
+  }
+}
+query Visit($visitId: ID!) {
+  visit(id: $visitId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    location
+    latitude
+    longitude
+    dateVisit
+    status
+    mocked
+    visitItem {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      description
+      type
+      location
+      latitude
+      longitude
+      mocked
+      dateFull
+      file {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        fileName
+        fileExtension
+        fileMode
+        fileMongoId
+        fileUrl
+        url
+      }
+    }
+  }
+}
+query GenerateWorkedHours($input: generateWorkedHoursInput!) {
+  generateWorkedHours(input: $input) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    type
+    location
+    latitude
+    longitude
+    dateFull
+    time
+    mocked
+    visit {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      description
+      location
+      latitude
+      longitude
+      mocked
+      dateVisit
+      status
+      type {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        description
+        status
+      }
+    }
+    user {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      middleName
+      lastName
+      secondSurname
+      email
+      identificationType
+      identificationNumber
+      dateIssue
+      legalRepresentativeIdentificationType
+      legalRepresentativeIdentificationNumber
+      phoneCountryCode
+      phoneNumber
+      address
+      hasRural
+      confirmationCode
+      position
+      typeWoker
+      status
+      phoneVerification
+      emailVerification
+      type
+      fullName
+      isActivityNow
+    }
+  }
+}

@@ -1,0 +1,208 @@
+mutation CreateTool($createInput: CreateToolInput!) {
+  createTool(createInput: $createInput) {
+    id
+  }
+}
+mutation CreateToolVisit($createInput: CreateVisitToolUnitInput!) {
+  createToolVisit(createInput: $createInput) {
+    id
+  }
+}
+mutation CreateToolItem($createInput: CreateToolUnitInput!) {
+  createToolItem(createInput: $createInput) {
+    id
+  }
+}
+mutation CreateToolPhoto($createInput: CreateToolUnitPhotoInput!) {
+  createToolPhoto(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateTool($updateInput: UpdateToolInput!) {
+  updateTool(updateInput: $updateInput) {
+    id
+  }
+}
+mutation UpdateToolItem($updateInput: UpdateToolUnitInput!) {
+  updateToolItem(updateInput: $updateInput) {
+    id
+  }
+}
+mutation UpdateToolPhoto($updateInput: UpdateToolUnitPhotoInput!) {
+  updateToolPhoto(updateInput: $updateInput) {
+    id
+  }
+}
+mutation UpdateToolVisit($updateInput: UpdateVisitToolUnitInput!) {
+  updateToolVisit(updateInput: $updateInput) {
+    id
+  }
+}
+query Tools($orderBy: [FindToolOrderBy!], $where: FindToolWhere, $pagination: Pagination) {
+  Tools(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    reference
+    units {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      status
+    }
+  }
+  ToolsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+query ToolsItems($orderBy: [FindToolUnitOrderBy!], $where: FindToolUnitWhere, $pagination: Pagination) {
+  ToolsItems(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    tool {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      reference
+      __typename
+    }
+    status
+    __typename
+    visits {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      visit {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        description
+        location
+        latitude
+        longitude
+        mocked
+        dateVisit
+        status
+        type {
+          id
+          createdAt
+          updatedAt
+          deletedAt
+          name
+          description
+          status
+        }
+        user {
+          email
+          identificationType
+          identificationNumber
+          fullName
+          id
+        }
+      }
+      toolUnit {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+      }
+      usageDate
+      status
+      entryDate
+      user {
+        email
+        identificationType
+        identificationNumber
+        fullName
+        id
+      }
+      photos {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        file {
+          id
+          createdAt
+          updatedAt
+          deletedAt
+          fileName
+          fileExtension
+          fileMode
+          fileMongoId
+          fileUrl
+          url
+        }
+      }
+    }
+  }
+  ToolsItemsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+    __typename
+  }
+}
+query ToolsPhotos($orderBy: [FindVisitToolUnitPhotoOrderBy!], $where: FindVisitToolUnitPhotoWhere, $pagination: Pagination) {
+  ToolsPhotos(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    file {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      fileName
+      fileExtension
+      fileMode
+      fileMongoId
+      fileUrl
+      url
+    }
+  }
+}
+query ToolsVisits($orderBy: [FindVisitToolUnitOrderBy!], $where: FindVisitToolUnitWhere, $pagination: Pagination) {
+  ToolsVisits(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    usageDate
+    toolUnit {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      status
+    }
+  }
+  ToolsVisitsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+mutation UpdateToolVisit($updateInput: UpdateVisitToolUnitInput!) {
+  updateToolVisit(updateInput: $updateInput) {
+    id
+  }
+}

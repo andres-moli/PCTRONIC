@@ -1,0 +1,11 @@
+# .graphqlrc.yml
+schema: "https://89qpvk6w-3075.use.devtunnels.ms/graphql"
+documents: "graphql/**/*.graphql"
+generates:
+  graphql/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+    config:
+      withHooks: true

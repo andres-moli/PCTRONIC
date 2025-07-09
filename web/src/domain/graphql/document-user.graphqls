@@ -1,0 +1,83 @@
+mutation CreateTipoDocumento($createInput: CreateTipoDocumentoInput!) {
+  createTipoDocumento(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateTipoDocumento($updateInput: UpdateTipoDocumentoInput!) {
+  updateTipoDocumento(updateInput: $updateInput) {
+    id
+  }
+}
+query DocumentosUsuario($pagination: Pagination, $where: FindDocWhere, $orderBy: [FindDocOrderBy!]) {
+  documentosUsuario(pagination: $pagination, where: $where, orderBy: $orderBy) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    usuario {
+      email
+      identificationNumber
+      identificationType
+      fullName
+      id
+    }
+    tipoDocumento {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      nombre
+      descripcion
+      obligatorio
+      activo
+    }
+    file {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      fileName
+      fileExtension
+      fileMode
+      fileMongoId
+      fileUrl
+      url
+    }
+    estado
+    observaciones
+  }
+  documentosUsuarioCount(pagination: $pagination, where: $where, orderBy: $orderBy) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+query TiposDocumento($pagination: Pagination) {
+  tiposDocumento(pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    nombre
+    descripcion
+    obligatorio
+    activo
+  }
+  tiposDocumentoCount(pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+mutation CreateDocumentoUsuario($createInput: CreateDocumentoUsuarioInput!) {
+  createDocumentoUsuario(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateDocumentoUsuario($updateInput: UpdateDocumentoUsuarioInput!) {
+  updateDocumentoUsuario(updateInput: $updateInput) {
+    id
+  }
+}

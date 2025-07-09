@@ -1,0 +1,529 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, Keyboard, Alert, ActivityIndicator, Platform } from 'react-native';
+import {useColor} from '../../Constants/Color';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
+import { useNavigation } from '@react-navigation/native';
+import { StatusVisitEnum, useCreateVisitComentMutation, useCreateVisitMutation, useFinishVisitMutation, useUpdateVisitMutation, useVisitFindOneArgQuery, useVisitsQuery, VisitComentStatusEnum, VisitComentTypeEnum } from '../../graphql/generated/graphql';
+import useUser from '../../context/useUser';
+import { ToastyErrorGraph } from '../../graphql';
+import dayjs, { Dayjs } from 'dayjs';
+import handleUploadImage from '../../Lib/uptloadFile';
+import UploadProgressModal from './updload';
+import ImageField from '../Activities/imagenComponente';
+import VisitTypeSelector from './VisitTypeSelector';
+import FileViewer from '../Activities/FileViewer';
+const { color } = useColor();
+const ERROR_MOCK_LOCATION = 'Detectamos que la ubicación es falsa. Por favor, verifica tu conexión o intenta con una ubicación válida.'
+type Mode = 'inicio' | 'fin';
+
+const commentMap: Record<Mode, string[]> = {
+  inicio: [
+    'Inicio de jornada',
+    'Llegada a puesto de trabajo',
+    'Inicio de servicio de levantamiento',
+    'Inicio de servicio de mantenimiento',
+    'Inicio de servicio de instalación',
+    'Inicio de tarea programada',
+  ],
+  fin: [
+    'Fin de jornada',
+    'Fin de servicio de levantamiento',
+    'Fin de servicio de mantenimiento',
+    'Fin de servicio de instalación',
+    'Fin de tarea programada',
+  ]
+};
+const DailyActivityCard = () => {
+  const [isOpen, setIsOpen] = useState(true);
+  const [loading, setLoading] = useState(false); // Estado para cargar
+  const [loadingF, setLoadingF] = useState(false); // Estado para cargar
+  const [loadingC, setLoadingC] = useState(false); // Estado para cargar
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [comment, setComment] = useState('');
+  const [typeVisitId, setTypeVisitId] = useState<string>();
+  const [fileUri, setFileuri] = useState<ImagePicker.ImagePickerAsset>();
+
+  const [activities, setActivities] = useState<{ text: string; timestamp: string; image?: string; file?: string }[]>([]);
+  const [isDayStarted, setIsDayStarted] = useState(false); // Estado para controlar si el día ha comenzado
+  const [createVisit] = useCreateVisitMutation();
+  const [updateVisit] = useFinishVisitMutation();
+  const [commentAdd] = useCreateVisitComentMutation()
+  const toggleOpen = () => {
+    setIsOpen(!isOpen);
+  };
+  const {user} = useUser()
+  const {data, error, loading: loadingS, refetch} = useVisitFindOneArgQuery({
+    variables: {
+      where: {
+        user: {
+          _eq: user.id
+        },
+        status: {
+          _eq: StatusVisitEnum.Initiated
+        }
+
+      }
+    }
+  })
+  const handleStartDay = async () => {
+    if(!typeVisitId) {
+      Alert.alert('Debes selecionar un tipo de vista')
+      return
+    }
+    Alert.alert('Alerta', '¿Estas seguro que quieres comenzar con la actividad?', 
+      [
+        {
+          isPreferred: true,
+          text: 'SI',
+          onPress:  async ()=> {
+            
+            const { status } = await Location.requestForegroundPermissionsAsync(); // Solicitar permisos de ubicación
+            if (status === 'granted') {
+              const location = await Location.getCurrentPositionAsync({}); // Obtener la ubicación actual
+              const locationString = `Lat: ${location.coords.latitude}, Lon: ${location.coords.longitude}`;
+              let fileId: undefined | any = undefined;
+              if(fileUri){
+                const file = {
+                  uri: Platform.OS === 'ios' ? fileUri.uri.replace('file://', '') : fileUri.uri,
+                  name: `test-file.jpeg`,
+                  type: fileUri.mimeType,
+                }
+                setIsUploading(true);
+                setUploadProgress(0);
+                const dataFile = await handleUploadImage(file,setUploadProgress)
+                setIsUploading(false);
+                fileId = dataFile?.id
+              }
+              try {
+                setLoading(true)
+                const res = await createVisit({
+                  variables: {
+                    createInput: {
+                      dateVisit: new Date(),
+                      status: StatusVisitEnum.Initiated,
+                      userId: user.id || '',
+                      description: comment,
+                      latitude: location.coords.latitude.toString(),
+                      longitude: location.coords.longitude.toString(),
+                      mocked: location.mocked,
+                      typeId: typeVisitId || '',
+                      fileId
+                    }
+                  }
+                })
+                if(res.errors){
+                  Alert.alert("HUBO UN ERROR", res.errors[0].message, [ {text: 'ACEPTAR', style: 'default'}]);
+                  return
+                }
+                setComment('')
+                setFileuri(undefined)
+                Alert.alert("¡Muy bien!", 'El proceso termino con éxito', [ {text: 'ACEPTAR', style: 'default'}]);
+              }catch(err){
+                const menssage = ToastyErrorGraph(err as any);
+                Alert.alert("HUBO UN ERROR", menssage, [ {text: 'ACEPTAR', style: 'default'},])
+              }finally{
+                refetch()
+                setLoading(false); // Establecer carga en falso al finalizar
+
+              }
+            } else {
+              Alert.alert('Permiso de ubicación no concedido');
+            }
+          }
+        }, 
+        {
+          text: 'NO'
+        }
+      ]
+    )
+
+  };
+  const handleFinishDay = async () => {
+    Alert.alert('Alerta', '¿Estas seguro que quieres finalizar con la actividad?', 
+      [
+        {
+          isPreferred: true,
+          text: 'SI',
+          onPress:  async ()=> {
+            const { status } = await Location.requestForegroundPermissionsAsync(); // Solicitar permisos de ubicación
+            if (status === 'granted') {
+              const location = await Location.getCurrentPositionAsync({}); // Obtener la ubicación actual
+              const locationString = `Lat: ${location.coords.latitude}, Lon: ${location.coords.longitude}`;
+              try {
+                let fileId: undefined | any = undefined;
+                if(fileUri){
+                  const file = {
+                    uri: Platform.OS === 'ios' ? fileUri.uri.replace('file://', '') : fileUri.uri,
+                    name: `test-file.jpeg`,
+                    type: fileUri.mimeType,
+                  }
+                  setIsUploading(true);
+                  setUploadProgress(0);
+                  const dataFile = await handleUploadImage(file,setUploadProgress)
+                  setIsUploading(false);
+                  fileId = dataFile?.id
+                }
+                setLoadingF(true)
+                const res = await updateVisit({
+                  variables: {
+                    updateStatusInput: {
+                      dateVisit: new Date(),
+                      status: StatusVisitEnum.Initiated,
+                      id: data?.visitFindOneArg?.id || '',
+                      description: comment,
+                      latitude: location.coords.latitude.toString(),
+                      longitude: location.coords.longitude.toString(),
+                      mocked: location.mocked,
+                      fileId
+                    }
+                  }
+                })
+                if(res.errors){
+                  Alert.alert("HUBO UN ERROR", res.errors[0].message, [ {text: 'ACEPTAR', style: 'default'}]);
+                  return
+                }
+                setFileuri(undefined)
+                setComment('')
+                Alert.alert("¡Muy bien!", 'El proceso termino con éxito', [ {text: 'ACEPTAR', style: 'default'}]);
+              }catch(err){
+                const menssage = ToastyErrorGraph(err as any);
+                Alert.alert("HUBO UN ERROR", menssage, [ {text: 'ACEPTAR', style: 'default'},])
+              }finally{
+                refetch()
+                setLoadingF(false); // Establecer carga en falso al finalizar
+              }
+            } else {
+              Alert.alert('Permiso de ubicación no concedido');
+            }
+          }
+        }, 
+        {
+          text: 'NO'
+        }
+      ]
+    )
+  }
+  const handleCommentAdd = async () => {
+    Alert.alert('Alerta', '¿Estas seguro que quieres agregar el comentario?', 
+      [
+        {
+          isPreferred: true,
+          text: 'SI',
+          onPress:  async ()=> {
+            const { status } = await Location.requestForegroundPermissionsAsync(); // Solicitar permisos de ubicación
+            if (status === 'granted') {
+              const location = await Location.getCurrentPositionAsync({}); // Obtener la ubicación actual
+              const locationString = `Lat: ${location.coords.latitude}, Lon: ${location.coords.longitude}`;
+              try {
+                let fileId: undefined | any = undefined;
+                if(fileUri){
+                  const file = {
+                    uri: Platform.OS === 'ios' ? fileUri.uri.replace('file://', '') : fileUri.uri,
+                    name: `test-file.jpeg`,
+                    type: fileUri.mimeType,
+                  }
+                  setIsUploading(true);
+                  setUploadProgress(0);
+                  const dataFile = await handleUploadImage(file,setUploadProgress)
+                  setIsUploading(false);
+                  fileId = dataFile?.id
+                }
+                setLoadingC(true)
+                const res = await commentAdd({
+                  variables: {
+                    createInput: {
+                      dateFull: new Date(),
+                      date: new Date(),
+                      time: new Date(),
+                      visitId: data?.visitFindOneArg?.id || '',
+                      description: comment,
+                      type: VisitComentTypeEnum.Intermedio,
+                      latitude: location.coords.latitude.toString(),
+                      longitude: location.coords.longitude.toString(),
+                      mocked: location.mocked,
+                      fileId: fileId
+                    }
+                  }
+                })
+                if(res.errors){
+                  Alert.alert("HUBO UN ERROR", res.errors[0].message, [ {text: 'ACEPTAR', style: 'default'}]);
+                  return
+                }
+                setFileuri(undefined)
+                setComment('')
+                Alert.alert("¡Muy bien!", 'El proceso termino con éxito', [ {text: 'ACEPTAR', style: 'default'}]);
+              }catch(err){
+                const menssage = ToastyErrorGraph(err as any);
+                Alert.alert("HUBO UN ERROR", menssage, [ {text: 'ACEPTAR', style: 'default'},])
+              }finally{
+                refetch()
+                setLoadingC(false); // Establecer carga en falso al finalizar
+              }
+            } else {
+              Alert.alert('Permiso de ubicación no concedido');
+            }
+          }
+        }, 
+        {
+          text: 'NO'
+        }
+      ]
+    )
+  }
+  const handleCameraPicker = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Se requiere permiso de cámara para continuar.');
+      return;
+    }
+  
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+      exif: true
+    });
+  
+    if (!result.canceled) {
+      const file = result.assets[0];
+      setFileuri(file);
+    }
+  };
+  const handleAddComment = (text: string) => {
+    setComment(prev => prev ? `${prev}\n${text}` : text);
+  };
+  const mode = data?.visitFindOneArg ? 'fin' : 'inicio'
+  const predefinedComments = commentMap[mode];
+  return (
+    <View style={styles.card}>
+      <TouchableOpacity onPress={toggleOpen} style={styles.header}>
+        <Text style={styles.headerText}>
+          {data?.visitFindOneArg ? 'Estoy trabajando en...' : 'Voy a comenzar a...'}
+        </Text>
+        <MaterialCommunityIcons name={isOpen ? 'arrow-up-drop-circle' : 'arrow-down-drop-circle'} size={20} color={color.primary} />
+        {/*<MaterialCommunityIcons onPress={()=> {navigator.navigate("ActivityDetails", {id:'123'})}} name='chevron-triple-right' size={26} color={color.coral} />*/}
+      </TouchableOpacity>
+      <UploadProgressModal visible={isUploading} progress={uploadProgress} />
+      {isOpen && (
+        <View style={styles.content}>
+        <Text style={styles.label}>Comentarios rápidos:</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipContainer}>
+          {predefinedComments.map((item, index) => (
+            <TouchableOpacity key={index} style={styles.chip} onPress={() => handleAddComment(item)}>
+              <Text style={styles.chipText}>{item}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+          <TextInput
+            style={styles.textArea}
+            placeholder="Comentario antes de iniciar la actividad..."
+            value={comment}
+            onChangeText={setComment}
+            multiline
+            numberOfLines={4}
+          /> 
+                        <View style={styles.iconContainer}>
+                {/* <TouchableOpacity onPress={handleImagePicker} style={styles.iconButton}>
+                  <MaterialCommunityIcons name="image-plus" color={color.primary} size={28} />
+                </TouchableOpacity> */}
+                <TouchableOpacity onPress={handleCameraPicker} style={styles.iconButton}>
+                  <MaterialCommunityIcons name="camera" color={color.primary} size={28} />
+                </TouchableOpacity>
+                {
+                  fileUri && (
+                    <TouchableOpacity onPress={()=> setFileuri(undefined)} style={styles.iconButton}>
+                    <MaterialCommunityIcons name="delete-restore" color={color.primary} size={28} />
+                  </TouchableOpacity>
+                  )
+                }
+              </View>
+          {
+            (data?.visitFindOneArg)
+            ?
+            <>
+            <TouchableOpacity disabled={loading || loadingC} onPress={handleCommentAdd} style={styles.commentDayButton}>
+            {loading || loadingC? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.startDayText}>{'Agregar Comentario'}</Text>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity disabled={loading || loadingF} onPress={handleFinishDay} style={styles.finishDayButton}>
+            {loading || loadingF? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.startDayText}>{'Finalizar Actividad'}</Text>
+              )}
+            </TouchableOpacity>
+            </>
+            :
+            <>
+            <VisitTypeSelector
+              onSelect={(visitType) => {
+                setTypeVisitId(visitType?.id)
+              }}
+            />
+            <TouchableOpacity disabled={loading || loadingS} onPress={handleStartDay} style={styles.startDayButton}>
+            {loading || loadingS? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.startDayText}>{'Iniciar Actividad'}</Text>
+            )}
+            </TouchableOpacity>
+            </>
+            
+          }
+          <>
+            <ScrollView style={styles.activityList} showsVerticalScrollIndicator={false}>
+              {data?.visitFindOneArg?.visitItem.map((activity, index) => (
+                <View key={index} style={styles.activityItem}>
+                  <Text style={styles.activityText}>• {activity.description} 
+                  <Text style={styles.timestamp}>({dayjs(activity.dateFull).format('HH:mm:ss')})</Text></Text>
+                  <TouchableOpacity onPress={() => console.log(index)}>
+                    <MaterialCommunityIcons name="comment-account" color={color.primary} size={20} />
+                  </TouchableOpacity>
+                  {activity.file && (
+                    <ImageField value={activity.file.url} key={activity.id}></ImageField>
+                  )}
+                </View>
+              ))}
+            </ScrollView>
+          </>
+        </View>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: color.white,
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: color.lightBeige,
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 5,
+    margin: 20,
+  },
+  label: {
+    marginBottom: 8,
+    fontWeight: '600',
+    fontSize: 16
+  },
+  chipContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  chip: {
+    backgroundColor: color.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginRight: 8,
+  },
+  chipText: {
+    fontSize: 14,
+    color: color.lightBeige
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: color.darkGray,
+  },
+  content: {
+    marginTop: 10,
+  },
+  startDayButton: {
+    backgroundColor: color.primary,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  finishDayButton: {
+    backgroundColor: color.coral,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  commentDayButton: {
+    backgroundColor: color.primary,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  startDayText: {
+    color: color.white,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  iconButton: {
+    padding: 10,
+  },
+  textArea: {
+    borderWidth: 1,
+    borderColor: color.lightBeige,
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginBottom: 10,
+  },
+  activityList: {
+    marginTop: 10,
+    maxHeight: 200,
+  },
+  activityItem: {
+    marginBottom: 10,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: color.lightBeige,
+    borderLeftWidth: 4,
+    borderLeftColor: color.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  activityText: {
+    fontSize: 16,
+    color: color.darkGray,
+    flex: 1,
+  },
+  timestamp: {
+    fontSize: 10,
+    color: color.darkGray,
+  },
+  image: {
+    width: '100%',
+    height: 100,
+    borderRadius: 5,
+    marginTop: 5,
+  },
+  fileLink: {
+    marginTop: 5,
+  },
+  fileText: {
+    color: color.primary,
+    textDecorationLine: 'underline',
+  },
+});
+
+export default DailyActivityCard;

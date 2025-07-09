@@ -1,0 +1,27 @@
+mutation CreateVisitType($createInput: CreateVisitTypeInput!) {
+  createVisitType(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateVisitType($updateInput: UpdateVisitTypeInput!) {
+  updateVisitType(updateInput: $updateInput) {
+    id
+  }
+}
+query VisitTypes($orderBy: [FindVisitTypeOrderBy!], $where: FindVisitTypeWhere, $pagination: Pagination) {
+  visitTypes(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+  }
+  visitTypesCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}

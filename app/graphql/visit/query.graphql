@@ -1,0 +1,174 @@
+mutation CreateVisit($createInput: CreateVisitInput!) {
+  createVisit(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateVisit($updateInput: UpdateVisitInput!) {
+  updateVisit(updateInput: $updateInput) {
+    id
+  }
+}
+query Visits($where: FindVisitWhere, $orderBy: [FindVisitOrderBy!]) {
+  visits(where: $where, orderBy: $orderBy) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    location
+    latitude
+    longitude
+    dateVisit
+    status
+    type {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+    }
+    visitItem {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      description
+      type
+      location
+      latitude
+      longitude
+      dateFull
+    }
+    user {
+      id
+      identificationNumber
+      identificationType
+      fullName
+      email
+    }
+  }
+}
+query VisitFindOneArg($where: FindVisitWhere) {
+  visitFindOneArg(where: $where) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    location
+    latitude
+    longitude
+    dateVisit
+    status
+    type {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+    }
+    visitItem {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      description
+      type
+      location
+      latitude
+      longitude
+      dateFull
+      file {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        fileName
+        fileExtension
+        fileMode
+        fileMongoId
+        fileUrl
+        url
+      }
+    }
+    user {
+      id
+      identificationNumber
+      identificationType
+      fullName
+      email
+    }
+  }
+}
+mutation FinishVisit($updateStatusInput: UpdateStatusInput!) {
+  finishVisit(UpdateStatusInput: $updateStatusInput) {
+    id
+  }
+}
+mutation CreateVisitComent($createInput: CreateVisitComentInput!) {
+  createVisitComent(createInput: $createInput) {
+    id
+  }
+}
+query Visit($visitId: ID!) {
+  visit(id: $visitId) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    description
+    location
+    latitude
+    longitude
+    dateVisit
+    status
+    type {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+    }
+    visitItem {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      description
+      type
+      location
+      latitude
+      longitude
+      dateFull
+            file {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        fileName
+        fileExtension
+        fileMode
+        fileMongoId
+        fileUrl
+        url
+      }
+    }
+  }
+}
+query VisitTypes($where: FindVisitTypeWhere) {
+  visitTypes(where: $where) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+  }
+}

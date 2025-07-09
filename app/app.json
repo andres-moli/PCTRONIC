@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "pc-tronic",
+    "slug": "pc-tronic",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#007BFF"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/pc-tronic.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.amoli23.pctronic"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "74e76ed6-1ea5-4065-a662-302cfe9669d1"
+      }
+    },
+    "plugins": [
+      "expo-web-browser"
+    ]
+  }
+}

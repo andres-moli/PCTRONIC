@@ -1,0 +1,56 @@
+mutation Signin($signinInput: SigninInput!) {
+  signin(signinInput: $signinInput) {
+    token
+    user {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    middleName
+    lastName
+    secondSurname
+    email
+    identificationType
+    identificationNumber
+    phoneNumber
+    address
+    confirmationCode
+    position
+    status
+    phoneVerification
+    emailVerification
+    type
+    fullName
+    }
+  }
+}
+  mutation UpdateClient($updateInput: UpdateClientInput!) {
+    updateClient(updateInput: $updateInput) {
+      id
+    }
+  }
+  query ValidateUserToken($validateTokenInput: ValidateTokenInput!) {
+  validateUserToken(validateTokenInput: $validateTokenInput) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    middleName
+    lastName
+    secondSurname
+    email
+    identificationType
+    identificationNumber
+    phoneNumber
+    address
+    confirmationCode
+    position
+    status
+    phoneVerification
+    emailVerification
+    type
+    fullName
+  }
+}
