@@ -10,14 +10,14 @@ import useModal from "../../../hooks/useModal";
 
 const DocumentTable = () => {
   const {closeModal, isOpen, openModal} = useModal()
-  const takeValue = 10
+  const [take, setTake] = useState(10);
   const [skip, setSkip] = useState(0)
   const [tipoDocumento,settipoDocumento] = useState<TipoDocumento>()
   const {data, loading, refetch} = useTiposDocumentoQuery({
     variables: {
       pagination: {
         skip,
-        take: takeValue
+        take: take
       }
     }
   })
@@ -80,7 +80,13 @@ const DocumentTable = () => {
               }
             </div>
             <Card className="w-50 md:w-30 lg:w-50">
-              <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.tiposDocumentoCount as MetadataPagination} takeValue={takeValue} />
+              <PaginationTable
+                metadata={data?.tiposDocumentoCount || {} as MetadataPagination}
+                valueSkip={skip}
+                setSkip={setSkip}
+                valueTake={take}
+                setTake={setTake}
+              />
             </Card>
           </div>
         </div>

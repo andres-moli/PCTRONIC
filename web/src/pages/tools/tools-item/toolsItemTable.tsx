@@ -11,7 +11,7 @@ import ModalUpdateToolsItem from "./modalUpdate";
 
 const ToolsItemTable = () => {
   const {closeModal, isOpen, openModal} = useModal()
-  const takeValue = 10
+  const [take, setTake] = useState(10);
   const [skip, setSkip] = useState(0)
   const [tool,setTool] = useState<ToolUnit>()
   const {data, loading, refetch} = useToolsItemsQuery({
@@ -21,7 +21,7 @@ const ToolsItemTable = () => {
       },
       pagination: {
         skip,
-        take: takeValue
+        take: take
       }
     }
   })
@@ -34,7 +34,7 @@ const ToolsItemTable = () => {
         },
         pagination: {
           skip,
-          take: takeValue
+          take: take
         },
         where: {}
       })
@@ -55,7 +55,7 @@ const ToolsItemTable = () => {
         },
         pagination: {
           skip,
-          take: takeValue
+          take: take
         }
       })
     } catch {
@@ -154,7 +154,13 @@ const ToolsItemTable = () => {
               }
             </div>
             <Card className="w-50 md:w-30 lg:w-50">
-              <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.ToolsItemsCount as MetadataPagination} takeValue={takeValue} />
+               <PaginationTable
+                  metadata={data?.ToolsItemsCount || {} as MetadataPagination}
+                  valueSkip={skip}
+                  setSkip={setSkip}
+                  valueTake={take}
+                  setTake={setTake}
+                />
             </Card>
           </div>
         </div>

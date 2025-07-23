@@ -8,6 +8,8 @@ export class CreateToolUnitInput {
 
   @Field(() => String)
   name: string;
+  @Field(() => String)
+  referencia: string;
 
   @Field(() => ToolUnitStatusEnum, { defaultValue: ToolUnitStatusEnum.AVAILABLE })
   status?: ToolUnitStatusEnum;

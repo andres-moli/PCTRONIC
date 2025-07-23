@@ -10,7 +10,7 @@ import useModal from "../../../hooks/useModal";
 
 const ToolsTable = () => {
   const {closeModal, isOpen, openModal} = useModal()
-  const takeValue = 10
+  const [take, setTake] = useState(10);
   const [skip, setSkip] = useState(0)
   const [tool,setTool] = useState<Tool>()
   const {data, loading, refetch} = useToolsQuery({
@@ -20,7 +20,7 @@ const ToolsTable = () => {
       },
       pagination: {
         skip,
-        take: takeValue
+        take: take
       }
     }
   })
@@ -33,7 +33,7 @@ const ToolsTable = () => {
         },
         pagination: {
           skip,
-          take: takeValue
+          take: take
         },
         where: {}
       })
@@ -54,7 +54,7 @@ const ToolsTable = () => {
         },
         pagination: {
           skip,
-          take: takeValue
+          take: take
         }
       })
     } catch {
@@ -153,7 +153,13 @@ const ToolsTable = () => {
               }
             </div>
             <Card className="w-50 md:w-30 lg:w-50">
-              <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.ToolsCount as MetadataPagination} takeValue={takeValue} />
+              <PaginationTable
+                metadata={data?.ToolsCount || {} as MetadataPagination}
+                valueSkip={skip}
+                setSkip={setSkip}
+                valueTake={take}
+                setTake={setTake}
+              />
             </Card>
           </div>
         </div>

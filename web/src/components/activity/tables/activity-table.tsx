@@ -78,7 +78,7 @@ const ActivityTable = () => {
       setDescription(value);
     }
   };
-  const takeValue = 10
+  const [take, setTake] = useState(10);
   const [skip, setSkip] = useState(0)
   const {data, loading, refetch} = useVisitsQuery({
     variables: {
@@ -87,7 +87,7 @@ const ActivityTable = () => {
       },
       pagination: {
         skip,
-        take: takeValue
+        take: take
       }
     }
   })
@@ -106,7 +106,7 @@ const ActivityTable = () => {
         },
         pagination: {
           skip,
-          take: takeValue
+          take: take
         },
         where: {}
       })
@@ -131,7 +131,7 @@ const ActivityTable = () => {
         },
         pagination: {
           skip,
-          take: takeValue
+          take: take
         }
       })
     } catch {
@@ -265,6 +265,9 @@ const ActivityTable = () => {
                       Tipo
                     </th>
                     <th scope="col" className="px-6 py-4">
+                      Proyecto
+                    </th>
+                    <th scope="col" className="px-6 py-4">
                       Descripción
                     </th>
                     <th scope="col" className="px-6 py-4">
@@ -288,6 +291,7 @@ const ActivityTable = () => {
                         <td>
                           {visit.type ? visit.type.name : 'SIN TIPO'}
                         </td>
+                        <td className="whitespace-nowrap px-6 py-4">{visit.project ? visit.project.name : 'SIN PROYECTO'}</td>
                         <td className="whitespace-nowrap px-6 py-4">{visit.description}</td>
                         <td className="px-6 py-4">
                         <div className="flex items-center">
@@ -330,7 +334,13 @@ const ActivityTable = () => {
               }
             </div>
             <Card className="w-50 md:w-30 lg:w-50">
-              <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.visitsCount as MetadataPagination} takeValue={takeValue} />
+               <PaginationTable
+                  metadata={data?.visitsCount || {} as MetadataPagination}
+                  valueSkip={skip}
+                  setSkip={setSkip}
+                  valueTake={take}
+                  setTake={setTake}
+                />
             </Card>
           </div>
         </div>

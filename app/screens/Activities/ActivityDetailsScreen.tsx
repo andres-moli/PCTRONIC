@@ -130,6 +130,10 @@ const ActivityDetailsScreen = ({route, navigation}) => {
           <Text style={styles.value}>{data.visit.type ? data.visit.type.name : 'SIN TIPO'}</Text>
         </View>
         <View style={styles.row}>
+          <Text style={styles.label}>Proyecto</Text>
+          <Text style={styles.value}>{data.visit.project ? data.visit.project.name : 'SIN PROYECTO'}</Text>
+        </View>
+        <View style={styles.row}>
           <Text style={styles.label}>Tiempo Dedicado</Text>
           <Text style={styles.value}>{totalMinutos} minutos</Text>
         </View>

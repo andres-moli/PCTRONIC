@@ -69,6 +69,7 @@ query ToolsItems($orderBy: [FindToolUnitOrderBy!], $where: FindToolUnitWhere, $p
     updatedAt
     deletedAt
     name
+    referencia
     tool {
       id
       createdAt
@@ -120,6 +121,7 @@ query ToolsItems($orderBy: [FindToolUnitOrderBy!], $where: FindToolUnitWhere, $p
         updatedAt
         deletedAt
         name
+        referencia
       }
       usageDate
       status
@@ -192,6 +194,8 @@ query ToolsVisits($orderBy: [FindVisitToolUnitOrderBy!], $where: FindVisitToolUn
       updatedAt
       deletedAt
       status
+      referencia
+      name
     }
   }
   ToolsVisitsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {

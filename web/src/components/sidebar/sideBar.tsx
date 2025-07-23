@@ -2,12 +2,14 @@ import { BiFile, BiLogOut, BiSolidFile } from "react-icons/bi";
 import { FaHome, FaStore, FaBox, FaTags, FaClipboardList, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
-import { FaFileCirclePlus, FaMapLocation } from "react-icons/fa6";
+import { FaFileCirclePlus, FaFolderOpen, FaMapLocation } from "react-icons/fa6";
 import { FiMapPin } from "react-icons/fi";
 import { BsFillPinMapFill, BsTools, BsTypeBold } from "react-icons/bs";
 import { PiMapPinLineFill } from "react-icons/pi";
 import { FcDocument } from "react-icons/fc";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
+import { FolderArchiveIcon, MapPinCheckIcon, Settings } from "lucide-react";
+import { GrSettingsOption } from "react-icons/gr";
 
 const SideBar = () => {
   const navigate = useNavigate()
@@ -46,7 +48,7 @@ const SideBar = () => {
               href="/visit-type"
               className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
             >
-              <BsTypeBold className="w-5 h-5 text-gray-500 mr-3" />
+              <GrSettingsOption className="w-5 h-5 text-gray-500 mr-3" />
               Tipo visita
             </a>
           </li>
@@ -57,6 +59,18 @@ const SideBar = () => {
             >
               <FaClipboardList className="w-5 h-5 text-gray-500 mr-3" />
               Reportes
+            </a>
+          </li>
+        </ul>
+        <h2 className="mt-6 text-xs font-bold text-gray-800">Proyecto</h2>
+        <ul className="mt-4 space-y-2">
+          <li>
+            <a
+              href="/proyect"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+            >
+              <FaFolderOpen className="w-5 h-5 text-gray-500 mr-3" />
+              Proyectos
             </a>
           </li>
         </ul>
@@ -71,7 +85,7 @@ const SideBar = () => {
               Rutas
             </a>
           </li>
-          <li>
+          {/* <li>
             <a
               href="/location"
               className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
@@ -79,7 +93,7 @@ const SideBar = () => {
               <PiMapPinLineFill className="w-5 h-5 text-gray-500 mr-3" />
               Ubicacion
             </a>
-          </li>
+          </li> */}
         </ul>
         <h2 className="mt-6 text-xs font-bold text-gray-800">Herramientas</h2>
         <ul className="mt-4 space-y-2">
@@ -98,7 +112,7 @@ const SideBar = () => {
               className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
             >
               <FaTags className="w-5 h-5 text-gray-500 mr-3" />
-              Categories
+              Categorias
             </a>
           </li>
         </ul>

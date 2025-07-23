@@ -12,6 +12,11 @@ export class ToolUnit extends CrudEntity {
   @Column()
   @Field(() => String)
   name: string;
+
+  @Column({default: ''})
+  @Field(() => String)
+  referencia: string;
+  
   
   @ManyToOne(() => Tool, tool => tool.units, {lazy: true})
   @Field(() => Tool)

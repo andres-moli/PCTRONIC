@@ -18,6 +18,7 @@ const useDailyActivity = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [comment, setComment] = useState('');
   const [typeVisitId, setTypeVisitId] = useState<string | undefined>();
+  const [projectId, setProjectId] = useState<string | undefined>();
   const [fileUri, setFileuri] = useState<any>();
   const [activities, setActivities] = useState<Visit[]>([]);
   const [toolWithImages, setToolWithImages] = useState<ToolWithImages[]>([])
@@ -83,7 +84,8 @@ const useDailyActivity = () => {
                     mocked: location.mocked,
                     typeId: typeVisitId || '',
                     fileId,
-                    tools: toolsPhots
+                    tools: toolsPhots,
+                    projectId: projectId || undefined,
                   },
                 },
               });
@@ -303,7 +305,8 @@ const useDailyActivity = () => {
     refetch,
     data,
     toolWithImages,
-    setToolWithImages
+    setToolWithImages,
+    setProjectId
   };
 };
 

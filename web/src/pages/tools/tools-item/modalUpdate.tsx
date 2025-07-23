@@ -244,7 +244,7 @@ const ModalUpdateToolsItem: React.FC<RegisterModalProps> = ({ isOpen, onClose, t
                         </td>
                         <td className="px-4 py-2 text-sm text-gray-700">
                           {
-                            entry.status ? entry.status :(
+                            entry.status ? toolUnitStatusOptions.find(v => v.value == entry.status)?.label || '' :(
                               <select
                               id="statusToolsItem"
                               name="statusToolsItem"

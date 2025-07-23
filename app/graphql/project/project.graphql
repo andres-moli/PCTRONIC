@@ -1,0 +1,14 @@
+query ProjectVists($where: FindVisitProjectWhere, $orderBy: [FindVisitProjectOrderBy!]) {
+  projectVists(where: $where, orderBy: $orderBy) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+    endDate
+    startDate
+    isCompleted
+  }
+}

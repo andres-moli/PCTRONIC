@@ -3,6 +3,7 @@ import { useCreateTipoDocumentoMutation, useCreateToolMutation } from "../../../
 import { toast } from "sonner";
 import { apolloClient } from "../../../main.config";
 import { ToastyErrorGraph } from "../../../lib/utils";
+import { alertConfirm } from "../../../lib/alert";
 
 interface RegisterModalProps { 
   isOpen: boolean;
@@ -28,6 +29,18 @@ const ModalCreateDocument: React.FC<RegisterModalProps> = ({ isOpen, onClose }) 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const confirmed = await alertConfirm({
+      title: "¿Estás seguro que quieres crear este tipo de documento?",
+      confirmButtonText: "Si, crear",
+      // denyButtonText: "Cancelar",
+    });
+    if(!confirmed) {
+      return;
+    }
+    if (!formData.nombre || !formData.descripcion) {
+      toast.error("Todos los campos son requeridos");
+      return;
+    }
     const toatsId = toast.loading('Creando Tipo de documentos..')
     try {
         const res = await create({

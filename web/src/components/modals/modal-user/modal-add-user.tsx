@@ -3,6 +3,7 @@ import { useCreateUserMutation, UserDocumentTypes, UserTypes } from "../../../do
 import { toast } from "sonner";
 import { ToastyErrorGraph } from "../../../lib/utils";
 import { apolloClient } from "../../../main.config";
+import { alertConfirm } from "../../../lib/alert";
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -80,7 +81,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const confirmed = await alertConfirm({
+      title: "¿Estás seguro que quieres crear este usuario?",
+      confirmButtonText: "Si, crear",
+      // denyButtonText: "Cancelar",
+    });
+    if(!confirmed) {
+      return;
+    }
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);

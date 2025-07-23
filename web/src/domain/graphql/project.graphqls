@@ -1,0 +1,31 @@
+query ProjectVists($orderBy: [FindVisitProjectOrderBy!], $where: FindVisitProjectWhere, $pagination: Pagination) {
+  projectVists(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+    endDate
+    startDate
+    isCompleted
+  }
+  projectVistsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+
+mutation CreateProjectVist($createInput: CreateVisitProjectInput!) {
+  createProjectVist(createInput: $createInput) {
+    id
+  }
+}
+mutation UpdateProjectVist($updateInput: UpdateVisitProjectInput!) {
+  updateProjectVist(updateInput: $updateInput) {
+    id
+  }
+}

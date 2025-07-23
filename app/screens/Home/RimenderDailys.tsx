@@ -80,6 +80,7 @@ const DailyReminders = ({refetchControl}: {refetchControl: boolean}) => {
             {isLongMessage && <Text style={styles.seeMore}>ver más</Text>}
           </Text>
           <Text style={styles.date}>{item.type ? item.type.name : 'SIN TIPO'}</Text>
+          {/* <Text style={styles.date}>{item.project ? item.project.name : 'SIN Proyecto'}</Text> */}
           <Text style={styles.date}>{formatWithCommonFormats(item.dateVisit, 'G')}</Text>
         </View>
       </TouchableOpacity>

@@ -33,6 +33,12 @@ export type AuthResponse = {
   user: User;
 };
 
+export type BooleanFilter = {
+  _eq?: InputMaybe<Scalars['Boolean']>;
+  _in?: InputMaybe<Array<Scalars['Boolean']>>;
+  _neq?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type City = {
   __typename?: 'City';
   code: Scalars['Int'];
@@ -270,6 +276,7 @@ export type CreateToolInput = {
 
 export type CreateToolUnitInput = {
   name: Scalars['String'];
+  referencia: Scalars['String'];
   status?: ToolUnitStatusEnum;
   toolId: Scalars['ID'];
 };
@@ -326,10 +333,22 @@ export type CreateVisitInput = {
   location?: InputMaybe<Scalars['String']>;
   longitude?: InputMaybe<Scalars['String']>;
   mocked?: InputMaybe<Scalars['Boolean']>;
+  projectId?: InputMaybe<Scalars['String']>;
   status: StatusVisitEnum;
   tools?: InputMaybe<Array<CreateVisitToolUnitInput>>;
   typeId: Scalars['String'];
   userId: Scalars['String'];
+};
+
+export type CreateVisitProjectInput = {
+  description: Scalars['String'];
+  /** Formato: yyyy-MM-dd */
+  endDate?: InputMaybe<Scalars['String']>;
+  isCompleted?: Scalars['Boolean'];
+  name: Scalars['String'];
+  /** Formato: yyyy-MM-dd */
+  startDate?: InputMaybe<Scalars['String']>;
+  status?: VisitProjectStatusEnum;
 };
 
 export type CreateVisitToolUnitAllInput = {
@@ -492,6 +511,7 @@ export type FileInfo = {
   fileName: Scalars['String'];
   fileUrl?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  isFireBase?: Maybe<Scalars['Boolean']>;
   updatedAt: Scalars['DateTime'];
   url: Scalars['String'];
 };
@@ -648,6 +668,24 @@ export type FindVisitComentWhere = {
 export type FindVisitOrderBy = {
   createdAt?: InputMaybe<OrderTypes>;
   dateVisit?: InputMaybe<OrderTypes>;
+};
+
+export type FindVisitProjectOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+  endDate?: InputMaybe<OrderTypes>;
+  name?: InputMaybe<OrderTypes>;
+  startDate?: InputMaybe<OrderTypes>;
+};
+
+export type FindVisitProjectWhere = {
+  _and?: InputMaybe<Array<FindVisitProjectWhere>>;
+  _or?: InputMaybe<Array<FindVisitProjectWhere>>;
+  description?: InputMaybe<StringFilter>;
+  endDate?: InputMaybe<DateFilter>;
+  isCompleted?: InputMaybe<BooleanFilter>;
+  name?: InputMaybe<StringFilter>;
+  startDate?: InputMaybe<DateFilter>;
+  status?: InputMaybe<StringFilter>;
 };
 
 export type FindVisitToolUnitOrderBy = {
@@ -829,6 +867,7 @@ export type Mutation = {
   createParameter: Parameter;
   createPositionInput: Position;
   createProfile: Profile;
+  createProjectVist: VisitProject;
   createRole: Role;
   createRoleFx: Array<RoleFx>;
   createTipoDocumento: TipoDocumento;
@@ -861,6 +900,7 @@ export type Mutation = {
   removeParameter: Parameter;
   removePosition: Position;
   removeProfile: Profile;
+  removeProjectVist: VisitProject;
   removeRole: Role;
   removeRoleFx: Array<Scalars['String']>;
   removeTipoDocumento: TipoDocumento;
@@ -899,6 +939,7 @@ export type Mutation = {
   updatePassword: User;
   updatePositionInput: Position;
   updateProfile: Profile;
+  updateProjectVist: VisitProject;
   updateRole: Role;
   updateTipoDocumento: TipoDocumento;
   updateTool: Tool;
@@ -1001,6 +1042,11 @@ export type MutationCreatePositionInputArgs = {
 
 export type MutationCreateProfileArgs = {
   createInput: CreateProfileInput;
+};
+
+
+export type MutationCreateProjectVistArgs = {
+  createInput: CreateVisitProjectInput;
 };
 
 
@@ -1155,6 +1201,11 @@ export type MutationRemovePositionArgs = {
 
 
 export type MutationRemoveProfileArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationRemoveProjectVistArgs = {
   id: Scalars['ID'];
 };
 
@@ -1342,6 +1393,11 @@ export type MutationUpdatePositionInputArgs = {
 
 export type MutationUpdateProfileArgs = {
   updateInput: UpdateProfileInput;
+};
+
+
+export type MutationUpdateProjectVistArgs = {
+  updateInput: UpdateVisitProjectInput;
 };
 
 
@@ -1630,6 +1686,9 @@ export type Query = {
   profile: Profile;
   profiles: Array<Profile>;
   profilesCount: MetadataPagination;
+  projectVist: VisitProject;
+  projectVists: Array<VisitProject>;
+  projectVistsCount: MetadataPagination;
   revalidate: AuthResponse;
   role: Role;
   roleFx: RoleFx;
@@ -2077,6 +2136,25 @@ export type QueryProfilesCountArgs = {
 };
 
 
+export type QueryProjectVistArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryProjectVistsArgs = {
+  orderBy?: InputMaybe<Array<FindVisitProjectOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindVisitProjectWhere>;
+};
+
+
+export type QueryProjectVistsCountArgs = {
+  orderBy?: InputMaybe<Array<FindVisitProjectOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindVisitProjectWhere>;
+};
+
+
 export type QueryRoleArgs = {
   id: Scalars['ID'];
 };
@@ -2391,6 +2469,7 @@ export type ToolUnit = {
   deletedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  referencia: Scalars['String'];
   status: ToolUnitStatusEnum;
   tool: Tool;
   updatedAt: Scalars['DateTime'];
@@ -2640,6 +2719,7 @@ export type UpdateToolInput = {
 export type UpdateToolUnitInput = {
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;
+  referencia?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<ToolUnitStatusEnum>;
   toolId?: InputMaybe<Scalars['ID']>;
 };
@@ -2715,10 +2795,23 @@ export type UpdateVisitInput = {
   location?: InputMaybe<Scalars['String']>;
   longitude?: InputMaybe<Scalars['String']>;
   mocked?: InputMaybe<Scalars['Boolean']>;
+  projectId?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<StatusVisitEnum>;
   tools?: InputMaybe<Array<CreateVisitToolUnitInput>>;
   typeId?: InputMaybe<Scalars['String']>;
   userId?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateVisitProjectInput = {
+  description?: InputMaybe<Scalars['String']>;
+  /** Formato: yyyy-MM-dd */
+  endDate?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  isCompleted?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  /** Formato: yyyy-MM-dd */
+  startDate?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<VisitProjectStatusEnum>;
 };
 
 export type UpdateVisitToolUnitInput = {
@@ -2831,6 +2924,7 @@ export type Visit = {
   location?: Maybe<Scalars['String']>;
   longitude?: Maybe<Scalars['String']>;
   mocked?: Maybe<Scalars['Boolean']>;
+  project?: Maybe<VisitProject>;
   status: StatusVisitEnum;
   toolUnitsUsed?: Maybe<Array<VisitToolUnit>>;
   type?: Maybe<VisitType>;
@@ -2877,6 +2971,31 @@ export type VisitDashboardModel = {
   earrings: Array<Visit>;
   realized: Array<Visit>;
 };
+
+export type VisitProject = {
+  __typename?: 'VisitProject';
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  description: Scalars['String'];
+  /** Formato: dd/MM/yyyy */
+  endDate?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  isCompleted: Scalars['Boolean'];
+  name: Scalars['String'];
+  /** Formato: dd/MM/yyyy */
+  startDate?: Maybe<Scalars['String']>;
+  status: VisitProjectStatusEnum;
+  updatedAt: Scalars['DateTime'];
+};
+
+/** Estados posibles para un proyecto de visita */
+export enum VisitProjectStatusEnum {
+  Cancelled = 'CANCELLED',
+  Completed = 'COMPLETED',
+  InProgress = 'IN_PROGRESS',
+  OnHold = 'ON_HOLD',
+  Planned = 'PLANNED'
+}
 
 export type VisitToolUnit = {
   __typename?: 'VisitToolUnit';
@@ -2989,6 +3108,36 @@ export type UpdateDocumentoUsuarioMutationVariables = Exact<{
 
 export type UpdateDocumentoUsuarioMutation = { __typename?: 'Mutation', updateDocumentoUsuario: { __typename?: 'DocumentoUsuario', id: string } };
 
+export type RemoveDocumentoUsuarioMutationVariables = Exact<{
+  removeDocumentoUsuarioId: Scalars['ID'];
+}>;
+
+
+export type RemoveDocumentoUsuarioMutation = { __typename?: 'Mutation', removeDocumentoUsuario: { __typename?: 'DocumentoUsuario', id: string } };
+
+export type ProjectVistsQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindVisitProjectOrderBy> | FindVisitProjectOrderBy>;
+  where?: InputMaybe<FindVisitProjectWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type ProjectVistsQuery = { __typename?: 'Query', projectVists: Array<{ __typename?: 'VisitProject', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitProjectStatusEnum, endDate?: string | null, startDate?: string | null, isCompleted: boolean }>, projectVistsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
+
+export type CreateProjectVistMutationVariables = Exact<{
+  createInput: CreateVisitProjectInput;
+}>;
+
+
+export type CreateProjectVistMutation = { __typename?: 'Mutation', createProjectVist: { __typename?: 'VisitProject', id: string } };
+
+export type UpdateProjectVistMutationVariables = Exact<{
+  updateInput: UpdateVisitProjectInput;
+}>;
+
+
+export type UpdateProjectVistMutation = { __typename?: 'Mutation', updateProjectVist: { __typename?: 'VisitProject', id: string } };
+
 export type CreateToolMutationVariables = Exact<{
   createInput: CreateToolInput;
 }>;
@@ -3061,7 +3210,7 @@ export type ToolsItemsQueryVariables = Exact<{
 }>;
 
 
-export type ToolsItemsQuery = { __typename?: 'Query', ToolsItems: Array<{ __typename: 'ToolUnit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, status: ToolUnitStatusEnum, tool: { __typename: 'Tool', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, reference: string }, visits?: Array<{ __typename?: 'VisitToolUnit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, usageDate: any, status?: ToolUnitStatusEnum | null, entryDate?: any | null, visit: { __typename?: 'Visit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, location?: string | null, latitude?: string | null, longitude?: string | null, mocked?: boolean | null, dateVisit: any, status: StatusVisitEnum, type?: { __typename?: 'VisitType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitTypeStatusEnum } | null, user: { __typename?: 'User', email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null, fullName: string, id: string } }, toolUnit: { __typename?: 'ToolUnit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string }, user?: { __typename?: 'User', email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null, fullName: string, id: string } | null, photos?: Array<{ __typename?: 'ToolUnitPhoto', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, file: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } }> | null }> | null }>, ToolsItemsCount: { __typename: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
+export type ToolsItemsQuery = { __typename?: 'Query', ToolsItems: Array<{ __typename: 'ToolUnit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, referencia: string, status: ToolUnitStatusEnum, tool: { __typename: 'Tool', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, reference: string }, visits?: Array<{ __typename?: 'VisitToolUnit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, usageDate: any, status?: ToolUnitStatusEnum | null, entryDate?: any | null, visit: { __typename?: 'Visit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, location?: string | null, latitude?: string | null, longitude?: string | null, mocked?: boolean | null, dateVisit: any, status: StatusVisitEnum, type?: { __typename?: 'VisitType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitTypeStatusEnum } | null, user: { __typename?: 'User', email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null, fullName: string, id: string } }, toolUnit: { __typename?: 'ToolUnit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, referencia: string }, user?: { __typename?: 'User', email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null, fullName: string, id: string } | null, photos?: Array<{ __typename?: 'ToolUnitPhoto', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, file: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } }> | null }> | null }>, ToolsItemsCount: { __typename: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
 
 export type ToolsPhotosQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<FindVisitToolUnitPhotoOrderBy> | FindVisitToolUnitPhotoOrderBy>;
@@ -3079,7 +3228,7 @@ export type ToolsVisitsQueryVariables = Exact<{
 }>;
 
 
-export type ToolsVisitsQuery = { __typename?: 'Query', ToolsVisits: Array<{ __typename?: 'VisitToolUnit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, usageDate: any, toolUnit: { __typename?: 'ToolUnit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: ToolUnitStatusEnum } }>, ToolsVisitsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
+export type ToolsVisitsQuery = { __typename?: 'Query', ToolsVisits: Array<{ __typename?: 'VisitToolUnit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, usageDate: any, toolUnit: { __typename?: 'ToolUnit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, status: ToolUnitStatusEnum, referencia: string, name: string } }>, ToolsVisitsCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
 
 export type UsersQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<FindUsersOrderBy> | FindUsersOrderBy>;
@@ -3155,7 +3304,7 @@ export type VisitsQueryVariables = Exact<{
 }>;
 
 
-export type VisitsQuery = { __typename?: 'Query', visits: Array<{ __typename?: 'Visit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, location?: string | null, latitude?: string | null, longitude?: string | null, dateVisit: any, mocked?: boolean | null, status: StatusVisitEnum, visitItem: Array<{ __typename?: 'VisitComent', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, type: VisitComentTypeEnum, location?: string | null, latitude?: string | null, longitude?: string | null, dateFull?: any | null, mocked?: boolean | null, file?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }>, user: { __typename?: 'User', id: string, identificationNumber?: string | null, identificationType?: UserDocumentTypes | null, fullName: string, email: string }, type?: { __typename?: 'VisitType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitTypeStatusEnum } | null }>, visitsCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
+export type VisitsQuery = { __typename?: 'Query', visits: Array<{ __typename?: 'Visit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, location?: string | null, latitude?: string | null, longitude?: string | null, dateVisit: any, mocked?: boolean | null, status: StatusVisitEnum, project?: { __typename?: 'VisitProject', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitProjectStatusEnum, endDate?: string | null, startDate?: string | null, isCompleted: boolean } | null, visitItem: Array<{ __typename?: 'VisitComent', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, type: VisitComentTypeEnum, location?: string | null, latitude?: string | null, longitude?: string | null, dateFull?: any | null, mocked?: boolean | null, file?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }>, user: { __typename?: 'User', id: string, identificationNumber?: string | null, identificationType?: UserDocumentTypes | null, fullName: string, email: string }, type?: { __typename?: 'VisitType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitTypeStatusEnum } | null }>, visitsCount: { __typename?: 'MetadataPagination', totalItems?: number | null, itemsPerPage?: number | null, totalPages?: number | null, currentPage?: number | null } };
 
 export type VisitFindOneArgQueryVariables = Exact<{
   where?: InputMaybe<FindVisitWhere>;
@@ -3743,6 +3892,157 @@ export function useUpdateDocumentoUsuarioMutation(baseOptions?: Apollo.MutationH
 export type UpdateDocumentoUsuarioMutationHookResult = ReturnType<typeof useUpdateDocumentoUsuarioMutation>;
 export type UpdateDocumentoUsuarioMutationResult = Apollo.MutationResult<UpdateDocumentoUsuarioMutation>;
 export type UpdateDocumentoUsuarioMutationOptions = Apollo.BaseMutationOptions<UpdateDocumentoUsuarioMutation, UpdateDocumentoUsuarioMutationVariables>;
+export const RemoveDocumentoUsuarioDocument = gql`
+    mutation RemoveDocumentoUsuario($removeDocumentoUsuarioId: ID!) {
+  removeDocumentoUsuario(id: $removeDocumentoUsuarioId) {
+    id
+  }
+}
+    `;
+export type RemoveDocumentoUsuarioMutationFn = Apollo.MutationFunction<RemoveDocumentoUsuarioMutation, RemoveDocumentoUsuarioMutationVariables>;
+
+/**
+ * __useRemoveDocumentoUsuarioMutation__
+ *
+ * To run a mutation, you first call `useRemoveDocumentoUsuarioMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveDocumentoUsuarioMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeDocumentoUsuarioMutation, { data, loading, error }] = useRemoveDocumentoUsuarioMutation({
+ *   variables: {
+ *      removeDocumentoUsuarioId: // value for 'removeDocumentoUsuarioId'
+ *   },
+ * });
+ */
+export function useRemoveDocumentoUsuarioMutation(baseOptions?: Apollo.MutationHookOptions<RemoveDocumentoUsuarioMutation, RemoveDocumentoUsuarioMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveDocumentoUsuarioMutation, RemoveDocumentoUsuarioMutationVariables>(RemoveDocumentoUsuarioDocument, options);
+      }
+export type RemoveDocumentoUsuarioMutationHookResult = ReturnType<typeof useRemoveDocumentoUsuarioMutation>;
+export type RemoveDocumentoUsuarioMutationResult = Apollo.MutationResult<RemoveDocumentoUsuarioMutation>;
+export type RemoveDocumentoUsuarioMutationOptions = Apollo.BaseMutationOptions<RemoveDocumentoUsuarioMutation, RemoveDocumentoUsuarioMutationVariables>;
+export const ProjectVistsDocument = gql`
+    query ProjectVists($orderBy: [FindVisitProjectOrderBy!], $where: FindVisitProjectWhere, $pagination: Pagination) {
+  projectVists(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+    endDate
+    startDate
+    isCompleted
+  }
+  projectVistsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+    `;
+
+/**
+ * __useProjectVistsQuery__
+ *
+ * To run a query within a React component, call `useProjectVistsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectVistsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectVistsQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useProjectVistsQuery(baseOptions?: Apollo.QueryHookOptions<ProjectVistsQuery, ProjectVistsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectVistsQuery, ProjectVistsQueryVariables>(ProjectVistsDocument, options);
+      }
+export function useProjectVistsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectVistsQuery, ProjectVistsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectVistsQuery, ProjectVistsQueryVariables>(ProjectVistsDocument, options);
+        }
+export type ProjectVistsQueryHookResult = ReturnType<typeof useProjectVistsQuery>;
+export type ProjectVistsLazyQueryHookResult = ReturnType<typeof useProjectVistsLazyQuery>;
+export type ProjectVistsQueryResult = Apollo.QueryResult<ProjectVistsQuery, ProjectVistsQueryVariables>;
+export const CreateProjectVistDocument = gql`
+    mutation CreateProjectVist($createInput: CreateVisitProjectInput!) {
+  createProjectVist(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateProjectVistMutationFn = Apollo.MutationFunction<CreateProjectVistMutation, CreateProjectVistMutationVariables>;
+
+/**
+ * __useCreateProjectVistMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectVistMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectVistMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProjectVistMutation, { data, loading, error }] = useCreateProjectVistMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateProjectVistMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectVistMutation, CreateProjectVistMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProjectVistMutation, CreateProjectVistMutationVariables>(CreateProjectVistDocument, options);
+      }
+export type CreateProjectVistMutationHookResult = ReturnType<typeof useCreateProjectVistMutation>;
+export type CreateProjectVistMutationResult = Apollo.MutationResult<CreateProjectVistMutation>;
+export type CreateProjectVistMutationOptions = Apollo.BaseMutationOptions<CreateProjectVistMutation, CreateProjectVistMutationVariables>;
+export const UpdateProjectVistDocument = gql`
+    mutation UpdateProjectVist($updateInput: UpdateVisitProjectInput!) {
+  updateProjectVist(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateProjectVistMutationFn = Apollo.MutationFunction<UpdateProjectVistMutation, UpdateProjectVistMutationVariables>;
+
+/**
+ * __useUpdateProjectVistMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectVistMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectVistMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectVistMutation, { data, loading, error }] = useUpdateProjectVistMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateProjectVistMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectVistMutation, UpdateProjectVistMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectVistMutation, UpdateProjectVistMutationVariables>(UpdateProjectVistDocument, options);
+      }
+export type UpdateProjectVistMutationHookResult = ReturnType<typeof useUpdateProjectVistMutation>;
+export type UpdateProjectVistMutationResult = Apollo.MutationResult<UpdateProjectVistMutation>;
+export type UpdateProjectVistMutationOptions = Apollo.BaseMutationOptions<UpdateProjectVistMutation, UpdateProjectVistMutationVariables>;
 export const CreateToolDocument = gql`
     mutation CreateTool($createInput: CreateToolInput!) {
   createTool(createInput: $createInput) {
@@ -4071,6 +4371,7 @@ export const ToolsItemsDocument = gql`
     updatedAt
     deletedAt
     name
+    referencia
     tool {
       id
       createdAt
@@ -4122,6 +4423,7 @@ export const ToolsItemsDocument = gql`
         updatedAt
         deletedAt
         name
+        referencia
       }
       usageDate
       status
@@ -4258,6 +4560,8 @@ export const ToolsVisitsDocument = gql`
       updatedAt
       deletedAt
       status
+      referencia
+      name
     }
   }
   ToolsVisitsCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
@@ -4684,6 +4988,18 @@ export const VisitsDocument = gql`
     dateVisit
     mocked
     status
+    project {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+      endDate
+      startDate
+      isCompleted
+    }
     visitItem {
       id
       createdAt

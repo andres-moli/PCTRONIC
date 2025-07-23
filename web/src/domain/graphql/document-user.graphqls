@@ -81,3 +81,8 @@ mutation UpdateDocumentoUsuario($updateInput: UpdateDocumentoUsuarioInput!) {
     id
   }
 }
+mutation RemoveDocumentoUsuario($removeDocumentoUsuarioId: ID!) {
+  removeDocumentoUsuario(id: $removeDocumentoUsuarioId) {
+    id
+  }
+}

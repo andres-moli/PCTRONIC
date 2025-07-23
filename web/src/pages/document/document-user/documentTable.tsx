@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Card from "../../../components/cards/Card";
 import TableSkeleton from "../../../components/esqueleto/table";
-import { DocumentoUsuario, MetadataPagination, OrderTypes, TipoDocumento, Tool, useDocumentosUsuarioQuery, useTiposDocumentoQuery, useToolsQuery } from "../../../domain/graphql";
+import { DocumentoUsuario, MetadataPagination, OrderTypes, TipoDocumento, Tool, useDocumentosUsuarioQuery, useRemoveDocumentoUsuarioMutation, useTiposDocumentoQuery, useToolsQuery } from "../../../domain/graphql";
 import { toast } from "sonner";
 import { BsEyeFill, BsFiles } from "react-icons/bs";
 import { PaginationTable } from "../../../components/table/PaginationTable";
@@ -10,17 +10,20 @@ import useModal from "../../../hooks/useModal";
 import dayjs from "dayjs";
 import ModalUpdateDocumentUser from "./modalUpdate";
 import { onClickDocument } from "../../../lib/utils";
+import { Trash2 } from "lucide-react";
+import { alertConfirm } from "../../../lib/alert";
 
 const DocumentUserTable = () => {
   const {closeModal, isOpen, openModal} = useModal()
-  const takeValue = 10
+  const [take, setTake] = useState(10);
   const [skip, setSkip] = useState(0)
   const [tipoDocumento,settipoDocumento] = useState<DocumentoUsuario>()
+  const [deleteDocumentoUsuario] = useRemoveDocumentoUsuarioMutation()
   const {data, loading, refetch} = useDocumentosUsuarioQuery({
     variables: {
       pagination: {
         skip,
-        take: takeValue
+        take: take
       },
       orderBy: {
         createdAt: OrderTypes.Desc
@@ -30,6 +33,32 @@ const DocumentUserTable = () => {
   const onShown = (doc: DocumentoUsuario) => {
     settipoDocumento(doc)
     openModal()
+  }
+  const deleteDocument = async (id: string) => {
+    try {
+      const confirmed = await alertConfirm({
+        title: "¿Estás seguro que quieres eliminar este documento al usuario?",
+        confirmButtonText: "Si, Eliminar",
+        // denyButtonText: "Cancelar",
+      });
+      if(!confirmed) {
+        return;
+      }
+      const response = await deleteDocumentoUsuario({
+        variables: {
+          removeDocumentoUsuarioId: id
+        }
+      });
+      if (response.data?.removeDocumentoUsuario) {
+        toast.success("Documento eliminado correctamente");
+        refetch();
+      } else {
+        toast.error("Error al eliminar el documento");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el documento:", error);
+      toast.error("Error al eliminar el documento");
+    }
   }
   
   return (
@@ -82,6 +111,9 @@ const DocumentUserTable = () => {
                           // @ts-ignore
                           onClick={()=> onShown(doc)}/>
                         </td>
+                        <td className="whitespace-nowrap px-6 py-4">
+                          <Trash2 className="w-5 h-8 text-gray-500 mr-3 cursor-pointer" onClick={() => deleteDocument(doc.id)} ></Trash2>
+                        </td>
                       </tr>
                       )
                     })
@@ -91,7 +123,13 @@ const DocumentUserTable = () => {
               }
             </div>
             <Card className="w-50 md:w-30 lg:w-50">
-              <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.documentosUsuarioCount as MetadataPagination} takeValue={takeValue} />
+              <PaginationTable
+                metadata={data?.documentosUsuarioCount || {} as MetadataPagination}
+                valueSkip={skip}
+                setSkip={setSkip}
+                valueTake={take}
+                setTake={setTake}
+              />
             </Card>
           </div>
         </div>

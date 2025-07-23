@@ -12,6 +12,7 @@ import { VisitController } from './controller/visit.controller';
 import { HttpModule } from '@nestjs/axios';
 import { VisitComentModule } from '../visit-coment/visit-coment.module';
 import { VisitToolUnitModule } from '../tools/tool-visit/VisitToolUnitModule.module';
+import { VisitProjectModule } from '../visti-proyect/visit-project.module';
 
 
 @Module({
@@ -25,9 +26,10 @@ import { VisitToolUnitModule } from '../tools/tool-visit/VisitToolUnitModule.mod
     MailModule,
     HttpModule,
     VisitComentModule,
+    VisitProjectModule,
     forwardRef(()=> VisitToolUnitModule)
   ],
   controllers: [VisitController],
-  exports: [VisitService]
+  exports: [VisitService],
 })
 export class VisitModule {}

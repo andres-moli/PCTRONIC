@@ -35,6 +35,12 @@ export type AuthResponse = {
   user: User;
 };
 
+export type BooleanFilter = {
+  _eq?: InputMaybe<Scalars['Boolean']['input']>;
+  _in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  _neq?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type City = {
   __typename?: 'City';
   code: Scalars['Int']['output'];
@@ -272,6 +278,7 @@ export type CreateToolInput = {
 
 export type CreateToolUnitInput = {
   name: Scalars['String']['input'];
+  referencia: Scalars['String']['input'];
   status?: ToolUnitStatusEnum;
   toolId: Scalars['ID']['input'];
 };
@@ -328,10 +335,22 @@ export type CreateVisitInput = {
   location?: InputMaybe<Scalars['String']['input']>;
   longitude?: InputMaybe<Scalars['String']['input']>;
   mocked?: InputMaybe<Scalars['Boolean']['input']>;
+  projectId?: InputMaybe<Scalars['String']['input']>;
   status: StatusVisitEnum;
   tools?: InputMaybe<Array<CreateVisitToolUnitInput>>;
   typeId: Scalars['String']['input'];
   userId: Scalars['String']['input'];
+};
+
+export type CreateVisitProjectInput = {
+  description: Scalars['String']['input'];
+  /** Formato: yyyy-MM-dd */
+  endDate?: InputMaybe<Scalars['String']['input']>;
+  isCompleted?: Scalars['Boolean']['input'];
+  name: Scalars['String']['input'];
+  /** Formato: yyyy-MM-dd */
+  startDate?: InputMaybe<Scalars['String']['input']>;
+  status?: VisitProjectStatusEnum;
 };
 
 export type CreateVisitToolUnitAllInput = {
@@ -494,6 +513,7 @@ export type FileInfo = {
   fileName: Scalars['String']['output'];
   fileUrl?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  isFireBase?: Maybe<Scalars['Boolean']['output']>;
   updatedAt: Scalars['DateTime']['output'];
   url: Scalars['String']['output'];
 };
@@ -650,6 +670,24 @@ export type FindVisitComentWhere = {
 export type FindVisitOrderBy = {
   createdAt?: InputMaybe<OrderTypes>;
   dateVisit?: InputMaybe<OrderTypes>;
+};
+
+export type FindVisitProjectOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+  endDate?: InputMaybe<OrderTypes>;
+  name?: InputMaybe<OrderTypes>;
+  startDate?: InputMaybe<OrderTypes>;
+};
+
+export type FindVisitProjectWhere = {
+  _and?: InputMaybe<Array<FindVisitProjectWhere>>;
+  _or?: InputMaybe<Array<FindVisitProjectWhere>>;
+  description?: InputMaybe<StringFilter>;
+  endDate?: InputMaybe<DateFilter>;
+  isCompleted?: InputMaybe<BooleanFilter>;
+  name?: InputMaybe<StringFilter>;
+  startDate?: InputMaybe<DateFilter>;
+  status?: InputMaybe<StringFilter>;
 };
 
 export type FindVisitToolUnitOrderBy = {
@@ -831,6 +869,7 @@ export type Mutation = {
   createParameter: Parameter;
   createPositionInput: Position;
   createProfile: Profile;
+  createProjectVist: VisitProject;
   createRole: Role;
   createRoleFx: Array<RoleFx>;
   createTipoDocumento: TipoDocumento;
@@ -863,6 +902,7 @@ export type Mutation = {
   removeParameter: Parameter;
   removePosition: Position;
   removeProfile: Profile;
+  removeProjectVist: VisitProject;
   removeRole: Role;
   removeRoleFx: Array<Scalars['String']['output']>;
   removeTipoDocumento: TipoDocumento;
@@ -901,6 +941,7 @@ export type Mutation = {
   updatePassword: User;
   updatePositionInput: Position;
   updateProfile: Profile;
+  updateProjectVist: VisitProject;
   updateRole: Role;
   updateTipoDocumento: TipoDocumento;
   updateTool: Tool;
@@ -1003,6 +1044,11 @@ export type MutationCreatePositionInputArgs = {
 
 export type MutationCreateProfileArgs = {
   createInput: CreateProfileInput;
+};
+
+
+export type MutationCreateProjectVistArgs = {
+  createInput: CreateVisitProjectInput;
 };
 
 
@@ -1157,6 +1203,11 @@ export type MutationRemovePositionArgs = {
 
 
 export type MutationRemoveProfileArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveProjectVistArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -1344,6 +1395,11 @@ export type MutationUpdatePositionInputArgs = {
 
 export type MutationUpdateProfileArgs = {
   updateInput: UpdateProfileInput;
+};
+
+
+export type MutationUpdateProjectVistArgs = {
+  updateInput: UpdateVisitProjectInput;
 };
 
 
@@ -1605,6 +1661,7 @@ export type Query = {
   findOneArg?: Maybe<Position>;
   findOneFacturaClienteByCode: FindOneFacturaClienteByCode;
   functionalities: FunctionalityModel;
+  generateWorkedHours: Array<VisitComent>;
   getHoursByVisit: Scalars['Float']['output'];
   getMessages: Array<Message>;
   group: Group;
@@ -1631,6 +1688,9 @@ export type Query = {
   profile: Profile;
   profiles: Array<Profile>;
   profilesCount: MetadataPagination;
+  projectVist: VisitProject;
+  projectVists: Array<VisitProject>;
+  projectVistsCount: MetadataPagination;
   revalidate: AuthResponse;
   role: Role;
   roleFx: RoleFx;
@@ -1948,6 +2008,11 @@ export type QueryFindOneFacturaClienteByCodeArgs = {
 };
 
 
+export type QueryGenerateWorkedHoursArgs = {
+  input: GenerateWorkedHoursInput;
+};
+
+
 export type QueryGetHoursByVisitArgs = {
   id: Scalars['ID']['input'];
 };
@@ -2070,6 +2135,25 @@ export type QueryProfilesArgs = {
 
 export type QueryProfilesCountArgs = {
   pagination?: InputMaybe<Pagination>;
+};
+
+
+export type QueryProjectVistArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryProjectVistsArgs = {
+  orderBy?: InputMaybe<Array<FindVisitProjectOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindVisitProjectWhere>;
+};
+
+
+export type QueryProjectVistsCountArgs = {
+  orderBy?: InputMaybe<Array<FindVisitProjectOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindVisitProjectWhere>;
 };
 
 
@@ -2387,6 +2471,7 @@ export type ToolUnit = {
   deletedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  referencia: Scalars['String']['output'];
   status: ToolUnitStatusEnum;
   tool: Tool;
   updatedAt: Scalars['DateTime']['output'];
@@ -2636,6 +2721,7 @@ export type UpdateToolInput = {
 export type UpdateToolUnitInput = {
   id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+  referencia?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<ToolUnitStatusEnum>;
   toolId?: InputMaybe<Scalars['ID']['input']>;
 };
@@ -2711,16 +2797,30 @@ export type UpdateVisitInput = {
   location?: InputMaybe<Scalars['String']['input']>;
   longitude?: InputMaybe<Scalars['String']['input']>;
   mocked?: InputMaybe<Scalars['Boolean']['input']>;
+  projectId?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<StatusVisitEnum>;
   tools?: InputMaybe<Array<CreateVisitToolUnitInput>>;
   typeId?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateVisitProjectInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Formato: yyyy-MM-dd */
+  endDate?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  isCompleted?: InputMaybe<Scalars['Boolean']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Formato: yyyy-MM-dd */
+  startDate?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<VisitProjectStatusEnum>;
+};
+
 export type UpdateVisitToolUnitInput = {
   id: Scalars['ID']['input'];
   /** URLs de las fotos */
   photoUrls?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<ToolUnitStatusEnum>;
   toolUnitId?: InputMaybe<Scalars['ID']['input']>;
   usageDate?: InputMaybe<Scalars['DateTime']['input']>;
   visitId?: InputMaybe<Scalars['ID']['input']>;
@@ -2826,6 +2926,7 @@ export type Visit = {
   location?: Maybe<Scalars['String']['output']>;
   longitude?: Maybe<Scalars['String']['output']>;
   mocked?: Maybe<Scalars['Boolean']['output']>;
+  project?: Maybe<VisitProject>;
   status: StatusVisitEnum;
   toolUnitsUsed?: Maybe<Array<VisitToolUnit>>;
   type?: Maybe<VisitType>;
@@ -2873,15 +2974,43 @@ export type VisitDashboardModel = {
   realized: Array<Visit>;
 };
 
+export type VisitProject = {
+  __typename?: 'VisitProject';
+  createdAt: Scalars['DateTime']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  description: Scalars['String']['output'];
+  /** Formato: dd/MM/yyyy */
+  endDate?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  isCompleted: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  /** Formato: dd/MM/yyyy */
+  startDate?: Maybe<Scalars['String']['output']>;
+  status: VisitProjectStatusEnum;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+/** Estados posibles para un proyecto de visita */
+export enum VisitProjectStatusEnum {
+  Cancelled = 'CANCELLED',
+  Completed = 'COMPLETED',
+  InProgress = 'IN_PROGRESS',
+  OnHold = 'ON_HOLD',
+  Planned = 'PLANNED'
+}
+
 export type VisitToolUnit = {
   __typename?: 'VisitToolUnit';
   createdAt: Scalars['DateTime']['output'];
   deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  entryDate?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   photos?: Maybe<Array<ToolUnitPhoto>>;
+  status?: Maybe<ToolUnitStatusEnum>;
   toolUnit: ToolUnit;
   updatedAt: Scalars['DateTime']['output'];
   usageDate: Scalars['DateTime']['output'];
+  user?: Maybe<User>;
   visit: Visit;
 };
 
@@ -2914,6 +3043,13 @@ export type FindOneFacturaClienteByCode = {
   isFound: Scalars['Boolean']['output'];
 };
 
+export type GenerateWorkedHoursInput = {
+  fechaFinal: Scalars['String']['input'];
+  fechaInicio: Scalars['String']['input'];
+  typeId?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type SigninMutationVariables = Exact<{
   signinInput: SigninInput;
 }>;
@@ -2934,6 +3070,14 @@ export type ValidateUserTokenQueryVariables = Exact<{
 
 
 export type ValidateUserTokenQuery = { __typename?: 'Query', validateUserToken: { __typename?: 'User', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name?: string | null, middleName?: string | null, lastName?: string | null, secondSurname?: string | null, email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null, phoneNumber?: string | null, address?: string | null, confirmationCode?: string | null, position?: string | null, status: UserStatusTypes, phoneVerification: boolean, emailVerification: boolean, type: UserTypes, fullName: string } };
+
+export type ProjectVistsQueryVariables = Exact<{
+  where?: InputMaybe<FindVisitProjectWhere>;
+  orderBy?: InputMaybe<Array<FindVisitProjectOrderBy> | FindVisitProjectOrderBy>;
+}>;
+
+
+export type ProjectVistsQuery = { __typename?: 'Query', projectVists: Array<{ __typename?: 'VisitProject', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitProjectStatusEnum, endDate?: string | null, startDate?: string | null, isCompleted: boolean }> };
 
 export type CreateToolMutationVariables = Exact<{
   createInput: CreateToolInput;
@@ -3068,14 +3212,14 @@ export type VisitsQueryVariables = Exact<{
 }>;
 
 
-export type VisitsQuery = { __typename?: 'Query', visits: Array<{ __typename?: 'Visit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, location?: string | null, latitude?: string | null, longitude?: string | null, dateVisit: any, status: StatusVisitEnum, type?: { __typename?: 'VisitType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitTypeStatusEnum } | null, visitItem: Array<{ __typename?: 'VisitComent', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, type: VisitComentTypeEnum, location?: string | null, latitude?: string | null, longitude?: string | null, dateFull?: any | null }>, user: { __typename?: 'User', id: string, identificationNumber?: string | null, identificationType?: UserDocumentTypes | null, fullName: string, email: string } }> };
+export type VisitsQuery = { __typename?: 'Query', visits: Array<{ __typename?: 'Visit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, location?: string | null, latitude?: string | null, longitude?: string | null, dateVisit: any, status: StatusVisitEnum, project?: { __typename?: 'VisitProject', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitProjectStatusEnum, endDate?: string | null, startDate?: string | null, isCompleted: boolean } | null, type?: { __typename?: 'VisitType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitTypeStatusEnum } | null, visitItem: Array<{ __typename?: 'VisitComent', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, type: VisitComentTypeEnum, location?: string | null, latitude?: string | null, longitude?: string | null, dateFull?: any | null }>, user: { __typename?: 'User', id: string, identificationNumber?: string | null, identificationType?: UserDocumentTypes | null, fullName: string, email: string } }> };
 
 export type VisitFindOneArgQueryVariables = Exact<{
   where?: InputMaybe<FindVisitWhere>;
 }>;
 
 
-export type VisitFindOneArgQuery = { __typename?: 'Query', visitFindOneArg?: { __typename?: 'Visit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, location?: string | null, latitude?: string | null, longitude?: string | null, dateVisit: any, status: StatusVisitEnum, type?: { __typename?: 'VisitType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitTypeStatusEnum } | null, visitItem: Array<{ __typename?: 'VisitComent', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, type: VisitComentTypeEnum, location?: string | null, latitude?: string | null, longitude?: string | null, dateFull?: any | null, file?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }>, user: { __typename?: 'User', id: string, identificationNumber?: string | null, identificationType?: UserDocumentTypes | null, fullName: string, email: string } } | null };
+export type VisitFindOneArgQuery = { __typename?: 'Query', visitFindOneArg?: { __typename?: 'Visit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, location?: string | null, latitude?: string | null, longitude?: string | null, dateVisit: any, status: StatusVisitEnum, project?: { __typename?: 'VisitProject', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitProjectStatusEnum, endDate?: string | null, startDate?: string | null, isCompleted: boolean } | null, type?: { __typename?: 'VisitType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitTypeStatusEnum } | null, visitItem: Array<{ __typename?: 'VisitComent', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, type: VisitComentTypeEnum, location?: string | null, latitude?: string | null, longitude?: string | null, dateFull?: any | null, file?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }>, user: { __typename?: 'User', id: string, identificationNumber?: string | null, identificationType?: UserDocumentTypes | null, fullName: string, email: string } } | null };
 
 export type FinishVisitMutationVariables = Exact<{
   updateStatusInput: UpdateStatusInput;
@@ -3096,7 +3240,7 @@ export type VisitQueryVariables = Exact<{
 }>;
 
 
-export type VisitQuery = { __typename?: 'Query', visit: { __typename?: 'Visit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, location?: string | null, latitude?: string | null, longitude?: string | null, dateVisit: any, status: StatusVisitEnum, type?: { __typename?: 'VisitType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitTypeStatusEnum } | null, visitItem: Array<{ __typename?: 'VisitComent', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, type: VisitComentTypeEnum, location?: string | null, latitude?: string | null, longitude?: string | null, dateFull?: any | null, file?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> } };
+export type VisitQuery = { __typename?: 'Query', visit: { __typename?: 'Visit', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, location?: string | null, latitude?: string | null, longitude?: string | null, dateVisit: any, status: StatusVisitEnum, type?: { __typename?: 'VisitType', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitTypeStatusEnum } | null, project?: { __typename?: 'VisitProject', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name: string, description: string, status: VisitProjectStatusEnum, endDate?: string | null, startDate?: string | null, isCompleted: boolean } | null, visitItem: Array<{ __typename?: 'VisitComent', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, description: string, type: VisitComentTypeEnum, location?: string | null, latitude?: string | null, longitude?: string | null, dateFull?: any | null, file?: { __typename?: 'FileInfo', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, fileName: string, fileExtension: string, fileMode: FileModes, fileMongoId?: string | null, fileUrl?: string | null, url: string } | null }> } };
 
 export type VisitTypesQueryVariables = Exact<{
   where?: InputMaybe<FindVisitTypeWhere>;
@@ -3253,6 +3397,56 @@ export type ValidateUserTokenQueryHookResult = ReturnType<typeof useValidateUser
 export type ValidateUserTokenLazyQueryHookResult = ReturnType<typeof useValidateUserTokenLazyQuery>;
 export type ValidateUserTokenSuspenseQueryHookResult = ReturnType<typeof useValidateUserTokenSuspenseQuery>;
 export type ValidateUserTokenQueryResult = Apollo.QueryResult<ValidateUserTokenQuery, ValidateUserTokenQueryVariables>;
+export const ProjectVistsDocument = gql`
+    query ProjectVists($where: FindVisitProjectWhere, $orderBy: [FindVisitProjectOrderBy!]) {
+  projectVists(where: $where, orderBy: $orderBy) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    name
+    description
+    status
+    endDate
+    startDate
+    isCompleted
+  }
+}
+    `;
+
+/**
+ * __useProjectVistsQuery__
+ *
+ * To run a query within a React component, call `useProjectVistsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectVistsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectVistsQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useProjectVistsQuery(baseOptions?: Apollo.QueryHookOptions<ProjectVistsQuery, ProjectVistsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectVistsQuery, ProjectVistsQueryVariables>(ProjectVistsDocument, options);
+      }
+export function useProjectVistsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectVistsQuery, ProjectVistsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectVistsQuery, ProjectVistsQueryVariables>(ProjectVistsDocument, options);
+        }
+export function useProjectVistsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProjectVistsQuery, ProjectVistsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProjectVistsQuery, ProjectVistsQueryVariables>(ProjectVistsDocument, options);
+        }
+export type ProjectVistsQueryHookResult = ReturnType<typeof useProjectVistsQuery>;
+export type ProjectVistsLazyQueryHookResult = ReturnType<typeof useProjectVistsLazyQuery>;
+export type ProjectVistsSuspenseQueryHookResult = ReturnType<typeof useProjectVistsSuspenseQuery>;
+export type ProjectVistsQueryResult = Apollo.QueryResult<ProjectVistsQuery, ProjectVistsQueryVariables>;
 export const CreateToolDocument = gql`
     mutation CreateTool($createInput: CreateToolInput!) {
   createTool(createInput: $createInput) {
@@ -3949,6 +4143,18 @@ export const VisitsDocument = gql`
     longitude
     dateVisit
     status
+    project {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+      endDate
+      startDate
+      isCompleted
+    }
     type {
       id
       createdAt
@@ -4027,6 +4233,18 @@ export const VisitFindOneArgDocument = gql`
     longitude
     dateVisit
     status
+    project {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+      endDate
+      startDate
+      isCompleted
+    }
     type {
       id
       createdAt
@@ -4190,6 +4408,18 @@ export const VisitDocument = gql`
       name
       description
       status
+    }
+    project {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+      endDate
+      startDate
+      isCompleted
     }
     visitItem {
       id

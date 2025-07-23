@@ -15,6 +15,7 @@ import ToolsItemPage from '../pages/tools/tools-item';
 import DocumentPage from '../pages/document/document';
 import DocumentUserPage from '../pages/document/document-user';
 import VisitTypePage from '../pages/visit-tpe';
+import ProyectPage from '../pages/project';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -90,7 +91,12 @@ const AppRoutes: React.FC = () => {
             <ProtectedRoute element={<DocumentUserPage />} />
           }
         />
-        
+        <Route
+          path="/proyect"
+          element={
+            <ProtectedRoute element={<ProyectPage />} />
+          }
+        ></Route>
         <Route
           path="/locationFree/:lat/:lon"
           element={

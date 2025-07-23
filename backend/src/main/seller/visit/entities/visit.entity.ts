@@ -10,6 +10,7 @@ import { StatusVisitEnum } from '../emun/visit.emun';
 import { VisitType } from '../../visit-type/entities/visit-type.entity';
 import { VisitComent } from '../../visit-coment/entities/visit-coment.entity';
 import { VisitToolUnit } from '../../tools/tool-visit/entities/visit-tool-unit.entity';
+import { VisitProject } from '../../visti-proyect/entities/visit-project.entity';
 // import { Proyect } from '../../proyect/entities/proyect.entity';
 
 @Entity({ name:'cyt_visit'})
@@ -58,6 +59,10 @@ export class Visit extends CrudEntity {
   @ManyToOne( () => VisitType, (type) => type.id ,{ lazy: true, nullable: true})  
   @Field(() => VisitType, {nullable: true}) 
   type?: VisitType;
+
+  @ManyToOne(() => VisitProject, (project) => project.id, { lazy: true, nullable: true })
+  @Field(() => VisitProject, { nullable: true })
+  project?: VisitProject;
 
   @OneToMany( () => VisitComent,(item) => item.visit,{ lazy: true })  
   @Field(() => [VisitComent])

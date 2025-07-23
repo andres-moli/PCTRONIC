@@ -10,7 +10,7 @@ import { PaginationTable } from "../../components/table/PaginationTable";
 
 const VisitTypeTable = () => {
   const {closeModal, isOpen, openModal} = useModal()
-  const takeValue = 10
+  const [take, setTake] = useState(10);
   const [skip, setSkip] = useState(0)
   const [visitType,setVsitType] = useState<VisitType>()
   const {data, loading, refetch} = useVisitTypesQuery({
@@ -20,7 +20,7 @@ const VisitTypeTable = () => {
       },
       pagination: {
         skip,
-        take: takeValue
+        take: take
       }
     }
   })
@@ -33,7 +33,7 @@ const VisitTypeTable = () => {
         },
         pagination: {
           skip,
-          take: takeValue
+          take: take
         },
         where: {}
       })
@@ -54,7 +54,7 @@ const VisitTypeTable = () => {
         },
         pagination: {
           skip,
-          take: takeValue
+          take: take
         }
       })
     } catch {
@@ -153,7 +153,13 @@ const VisitTypeTable = () => {
               }
             </div>
             <Card className="w-50 md:w-30 lg:w-50">
-              <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.visitTypesCount as MetadataPagination} takeValue={takeValue} />
+                <PaginationTable
+                  metadata={data?.visitTypesCount || {} as MetadataPagination}
+                  valueSkip={skip}
+                  setSkip={setSkip}
+                  valueTake={take}
+                  setTake={setTake}
+                />
             </Card>
           </div>
         </div>

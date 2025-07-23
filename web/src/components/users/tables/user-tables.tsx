@@ -19,12 +19,12 @@ const UserTable: React.FC = () => {
   const [skip, setSkip] = useState(0)
   const [user, setUser] = useState<User>()
 
-  const takeValue = 10
+  const [take, setTake] = useState(10);
   const {data, loading, refetch} = useUsersQuery({
     variables: {
       pagination: {
         skip,
-        take: takeValue
+        take: take
       }
     }
   })
@@ -160,7 +160,13 @@ const UserTable: React.FC = () => {
       </table>
       }
       <Card className="w-50 md:w-30 lg:w-50">
-        <PaginationTable skipState={{ value: skip, setValue: setSkip }} metaDataPagination={data?.usersCount as MetadataPagination} takeValue={takeValue} />
+              <PaginationTable
+                metadata={data?.usersCount   || {} as MetadataPagination}
+                valueSkip={skip}
+                setSkip={setSkip}
+                valueTake={take}
+                setTake={setTake}
+              />
       </Card>
       <EditUserModal
         isOpen={isRegisterModalOpen}

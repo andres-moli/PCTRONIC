@@ -20,6 +20,7 @@ import ToolSelectionModal, { ToolWithImages } from './ToolSelectionModal';
 import useModal from '../../hook/useModal';
 import UploadProgressModal2 from '../../Lib/UploadProgressModal';
 import Octicons from '@expo/vector-icons/Octicons';
+import VisitProjectSelector from './VisitProjectSelector';
 const { color } = useColor();
 const ERROR_MOCK_LOCATION = 'Detectamos que la ubicación es falsa. Por favor, verifica tu conexión o intenta con una ubicación válida.';
 
@@ -50,7 +51,8 @@ const DailyActivityCard = () => {
     handleAddComment,
     data,
     setToolWithImages,
-    toolWithImages
+    toolWithImages,
+    setProjectId
   } = useDailyActivity();
   const mode = data?.visitFindOneArg ? 'fin' : 'inicio'
   const predefinedComments = commentMap[mode];
@@ -116,6 +118,10 @@ const DailyActivityCard = () => {
             }
               <VisitTypeSelector
                 onSelect={(visitType) => setTypeVisitId(visitType?.id)}
+              />
+              <VisitProjectSelector 
+                onSelect={(project) => setProjectId(project?.id)}
+                placeholder="Selecciona un proyecto"
               />
               <TouchableOpacity disabled={loading || loadingF} onPress={handleStartDay} style={styles.startDayButton}>
                 {loading || loadingF ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.startDayText}>Iniciar Actividad</Text>}

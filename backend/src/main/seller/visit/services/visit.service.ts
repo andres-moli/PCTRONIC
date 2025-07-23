@@ -28,6 +28,7 @@ import { findOneVisitInProcessInput, generateWorkedHoursInput } from '../dto/inp
 import { UpdateStatusInput } from '../dto/inputs/update-status-visit.dto';
 import { VisitComent } from '../../visit-coment/entities/visit-coment.entity';
 import { VisitToolVisittService } from '../../tools/tool-visit/service/tool-visit-service';
+import { VisitProjectService } from '../../visti-proyect/service/visit-project.service';
 export const serviceStructure = CrudServiceStructure({
   entityType: Visit,
   createInputType: CreateVisitInput,
@@ -44,6 +45,7 @@ export class VisitService extends CrudServiceFrom(serviceStructure) {
     private readonly visitTypeService: VisitTypeService,
     private readonly mailService: MailService,
     private readonly httpService: HttpService,
+    private readonly visitProjectService: VisitProjectService,
     @Inject(forwardRef(() => VisitComentService))
     private readonly visitComentService: VisitComentService,
     @Inject(forwardRef(() => VisitToolVisittService))
@@ -62,6 +64,10 @@ export class VisitService extends CrudServiceFrom(serviceStructure) {
     entity.user = await this.usersService.findOne(context,createInput.userId, true);
     entity.dateVisit = createInput.dateVisit
     entity.type = await this.visitTypeService.findOne(context,createInput.typeId);
+    console.log(createInput.projectId)
+    if(createInput.projectId){
+      entity.project = await this.visitProjectService.findOne(context,createInput.projectId,true)
+    } 
   }
   async beforeUpdate(context: IContext, repository: Repository<Visit>, entity: Visit, updateInput: UpdateVisitInput): Promise<void> {
     if(updateInput.status === entity.status){

@@ -3,6 +3,7 @@ import { useCreateToolMutation } from "../../../domain/graphql";
 import { toast } from "sonner";
 import { apolloClient } from "../../../main.config";
 import { ToastyErrorGraph } from "../../../lib/utils";
+import { alertConfirm } from "../../../lib/alert";
 
 interface RegisterModalProps { 
   isOpen: boolean;
@@ -25,6 +26,18 @@ const ModalCreateTools: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const confirmed = await alertConfirm({
+      title: "¿Estás seguro que quieres crear esta herramienta?",
+      confirmButtonText: "Si, crear",
+      // denyButtonText: "Cancelar",
+    });
+    if(!confirmed) {
+      return;
+    }
+    if (!formData.name || !formData.description) {
+      toast.error("Todos los campos son requeridos");
+      return;
+    }
     const toatsId = toast.loading('Creando Herramienta..')
     try {
         const res = await create({

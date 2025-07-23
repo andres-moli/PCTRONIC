@@ -21,6 +21,18 @@ query Visits($where: FindVisitWhere, $orderBy: [FindVisitOrderBy!], $pagination:
     dateVisit
     mocked
     status
+    project {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+      endDate
+      startDate
+      isCompleted   
+    }
     visitItem {
       id
       createdAt

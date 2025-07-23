@@ -20,6 +20,18 @@ query Visits($where: FindVisitWhere, $orderBy: [FindVisitOrderBy!]) {
     longitude
     dateVisit
     status
+    project {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+      endDate
+      startDate
+      isCompleted
+    }
     type {
       id
       createdAt
@@ -62,6 +74,18 @@ query VisitFindOneArg($where: FindVisitWhere) {
     longitude
     dateVisit
     status
+        project {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+      endDate
+      startDate
+      isCompleted
+    }
     type {
       id
       createdAt
@@ -134,6 +158,18 @@ query Visit($visitId: ID!) {
       name
       description
       status
+    }
+            project {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      name
+      description
+      status
+      endDate
+      startDate
+      isCompleted
     }
     visitItem {
       id

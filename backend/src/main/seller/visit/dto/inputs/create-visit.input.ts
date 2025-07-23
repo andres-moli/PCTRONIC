@@ -43,6 +43,11 @@ export class CreateVisitInput {
     @Field(() => String)
     @IsString()
     typeId: string
+
+    @Field(() => String, {nullable: true})
+    @IsString()
+    @IsOptional()
+    projectId?:string;
     
     @Field(() => StatusVisitEnum)
     status: StatusVisitEnum;

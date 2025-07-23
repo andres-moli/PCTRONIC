@@ -3,6 +3,7 @@ import { ToolUnitStatusEnum, useCreateToolItemMutation, useCreateToolMutation, u
 import { toast } from "sonner";
 import { apolloClient } from "../../../main.config";
 import { ToastyErrorGraph } from "../../../lib/utils";
+import { alertConfirm } from "../../../lib/alert";
 
 interface RegisterModalProps { 
   isOpen: boolean;
@@ -22,11 +23,13 @@ const ModalCreateToolsItem: React.FC<RegisterModalProps> = ({ isOpen, onClose })
   const [formData, setFormData] = useState({
     name: "",
     toolId: "",
+    referencia: "",
   });
 
   const [errors, setErrors] = useState({
     name: "",
     toolId: "",
+    referencia: "",
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -44,6 +47,22 @@ const ModalCreateToolsItem: React.FC<RegisterModalProps> = ({ isOpen, onClose })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const confirmed = await alertConfirm({
+      title: "¿Estás seguro que quieres crear esta herramienta?",
+      confirmButtonText: "Si, crear",
+      // denyButtonText: "Cancelar",
+    });
+    if(!confirmed) {
+      return;
+    }
+    if (!formData.name || !formData.toolId || !formData.referencia) {
+      setErrors({
+        name: !formData.name ? "El nombre es requerido" : "",
+        toolId: !formData.toolId ? "La herramienta es requerida" : "",
+        referencia: !formData.referencia ? "La referencia es requerida" : "",
+      });
+      return;
+    }
     const toatsId = toast.loading('Creando Herramienta..')
     try {
         const res = await create({
@@ -51,7 +70,8 @@ const ModalCreateToolsItem: React.FC<RegisterModalProps> = ({ isOpen, onClose })
                 createInput: {
                     name: formData.name,
                     toolId: formData.toolId,
-                    status: ToolUnitStatusEnum.Available
+                    status: ToolUnitStatusEnum.Available,
+                    referencia: formData.referencia,
                 }
             }
         })
@@ -65,6 +85,7 @@ const ModalCreateToolsItem: React.FC<RegisterModalProps> = ({ isOpen, onClose })
         setFormData({
             name: "",
             toolId: "",
+            referencia: "",
         })
         onClose(); // Cerrar el modal después de enviar
     } catch (err) {
@@ -90,6 +111,18 @@ const ModalCreateToolsItem: React.FC<RegisterModalProps> = ({ isOpen, onClose })
               id="name"
               name="name"
               value={formData.name}
+              onChange={handleChange}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              required
+            />
+            <label htmlFor="referencia" className="block text-sm font-medium">
+              Referencia
+            </label>
+            <input
+              type="text"
+              id="referencia"
+              name="referencia"
+              value={formData.referencia}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
               required
