@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import { translateStatusVisit } from '../../Lib';
 import ImageField from './imagenComponente';
 import { OpenUrlInApp } from '../../Lib/OpenUrl';
+import { URL_CLIENT } from '../../Constants/url';
 const { color } = useColor();
 
 
@@ -54,7 +55,7 @@ const ActivityDetailsScreen = ({route, navigation}) => {
         .map(point => `${point.latitude},${point.longitude}`)
         .join(';');
     
-      const url = `https://89qpvk6w-5173.use.devtunnels.ms/locationMulti/${markers}`;
+      const url = `${URL_CLIENT}locationMulti/${markers}`;
       navigation.navigate('MapAndoridMulti',  {link: url})
       return
     }

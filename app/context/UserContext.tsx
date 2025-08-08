@@ -56,6 +56,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const logout = async () => {
     try {
       await AsyncStorage.removeItem(SESSION_COOKIE_KEY);
+      await AsyncStorage.removeItem('user');
       setUser(null);
     } catch (error) {
       console.error('Error removing user data:', error);

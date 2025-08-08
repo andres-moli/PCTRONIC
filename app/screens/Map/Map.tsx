@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Platform, Linking, Dimensions, Button } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import WebView from 'react-native-webview';
+import { URL_CLIENT } from '../../Constants/url';
 
 const { width, height } = Dimensions.get('window');
 
 const MapComponent = ({ route }) => {
   const { latitude, longitude } = route.params;
-  const [url, setUrl] = useState(`https://89qpvk6w-5173.use.devtunnels.ms/locationFree/${latitude}/${longitude}`)
+  const [url, setUrl] = useState(`${URL_CLIENT}locationFree/${latitude}/${longitude}`)
   console.log(url)
   const [region, setRegion] = useState({
     latitude: latitude,

@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Date: any;
   DateTime: any;
   ValidatePassword: any;
 };
@@ -260,6 +261,15 @@ export type CreateProfileInput = {
 export type CreateRoleInput = {
   description: Scalars['String'];
   name: Scalars['String'];
+};
+
+export type CreateScheduleDto = {
+  date: Scalars['DateTime'];
+  day: WeekDay;
+  endTime?: InputMaybe<Scalars['String']>;
+  isDayOff?: Scalars['Boolean'];
+  startTime?: InputMaybe<Scalars['String']>;
+  userId: Scalars['String'];
 };
 
 export type CreateTipoDocumentoInput = {
@@ -612,6 +622,22 @@ export type FindFletesWhere = {
   status?: InputMaybe<StringFilter>;
 };
 
+export type FindScheduleOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+  day?: InputMaybe<OrderTypes>;
+  startTime?: InputMaybe<OrderTypes>;
+};
+
+export type FindScheduleWhere = {
+  _and?: InputMaybe<Array<FindScheduleWhere>>;
+  _or?: InputMaybe<Array<FindScheduleWhere>>;
+  day?: InputMaybe<StringFilter>;
+  endTime?: InputMaybe<StringFilter>;
+  isDayOff?: InputMaybe<BooleanFilter>;
+  startTime?: InputMaybe<StringFilter>;
+  user?: InputMaybe<StringFilter>;
+};
+
 export type FindToolOrderBy = {
   createdAt?: InputMaybe<OrderTypes>;
 };
@@ -870,6 +896,7 @@ export type Mutation = {
   createProjectVist: VisitProject;
   createRole: Role;
   createRoleFx: Array<RoleFx>;
+  createSchudele: Schedule;
   createTipoDocumento: TipoDocumento;
   createTool: Tool;
   createToolItem: ToolUnit;
@@ -903,6 +930,7 @@ export type Mutation = {
   removeProjectVist: VisitProject;
   removeRole: Role;
   removeRoleFx: Array<Scalars['String']>;
+  removeSchudele: Schedule;
   removeTipoDocumento: TipoDocumento;
   removeTool: Tool;
   removeToolItem: ToolUnit;
@@ -941,6 +969,7 @@ export type Mutation = {
   updateProfile: Profile;
   updateProjectVist: VisitProject;
   updateRole: Role;
+  updateSchudele: Schedule;
   updateTipoDocumento: TipoDocumento;
   updateTool: Tool;
   updateToolItem: ToolUnit;
@@ -1057,6 +1086,11 @@ export type MutationCreateRoleArgs = {
 
 export type MutationCreateRoleFxArgs = {
   createRoleFxInput: CreateAndRemoveRoleFxInput;
+};
+
+
+export type MutationCreateSchudeleArgs = {
+  createInput: CreateScheduleDto;
 };
 
 
@@ -1217,6 +1251,11 @@ export type MutationRemoveRoleArgs = {
 
 export type MutationRemoveRoleFxArgs = {
   removeRoleFxInput: CreateAndRemoveRoleFxInput;
+};
+
+
+export type MutationRemoveSchudeleArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -1403,6 +1442,11 @@ export type MutationUpdateProjectVistArgs = {
 
 export type MutationUpdateRoleArgs = {
   updateInput: UpdateRoleInput;
+};
+
+
+export type MutationUpdateSchudeleArgs = {
+  updateInput: UpdateScheduleDto;
 };
 
 
@@ -1696,6 +1740,9 @@ export type Query = {
   rolesCount: MetadataPagination;
   rolesFx: Array<RoleFx>;
   rolesFxCount: MetadataPagination;
+  schudele: Schedule;
+  schudeles: Array<Schedule>;
+  schudelesCount: MetadataPagination;
   sendEmailRecovryPassword: Scalars['String'];
   tipoDocumento: TipoDocumento;
   tiposDocumento: Array<TipoDocumento>;
@@ -2185,6 +2232,25 @@ export type QueryRolesFxCountArgs = {
 };
 
 
+export type QuerySchudeleArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QuerySchudelesArgs = {
+  orderBy?: InputMaybe<Array<FindScheduleOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindScheduleWhere>;
+};
+
+
+export type QuerySchudelesCountArgs = {
+  orderBy?: InputMaybe<Array<FindScheduleOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindScheduleWhere>;
+};
+
+
 export type QuerySendEmailRecovryPasswordArgs = {
   email: Scalars['String'];
 };
@@ -2330,6 +2396,20 @@ export enum RouterType {
   InternalRouteWithArguments = 'InternalRouteWithArguments',
   InternaltRoute = 'InternaltRoute'
 }
+
+export type Schedule = {
+  __typename?: 'Schedule';
+  createdAt: Scalars['DateTime'];
+  date: Scalars['Date'];
+  day: WeekDay;
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  endTime?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  isDayOff: Scalars['Boolean'];
+  startTime?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['DateTime'];
+  user: User;
+};
 
 export type SendDoubleVerificationInput = {
   email?: InputMaybe<Scalars['String']>;
@@ -2690,6 +2770,14 @@ export type UpdateRoleInput = {
   name?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateScheduleDto = {
+  date?: InputMaybe<Scalars['DateTime']>;
+  day?: InputMaybe<WeekDay>;
+  endTime?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
+  startTime?: InputMaybe<Scalars['String']>;
+};
+
 export type UpdateStatusInput = {
   dateVisit: Scalars['DateTime'];
   description?: InputMaybe<Scalars['String']>;
@@ -3028,6 +3116,16 @@ export enum VisitTypeStatusEnum {
   Inactive = 'INACTIVE'
 }
 
+export enum WeekDay {
+  Friday = 'FRIDAY',
+  Monday = 'MONDAY',
+  Saturday = 'SATURDAY',
+  Sunday = 'SUNDAY',
+  Thursday = 'THURSDAY',
+  Tuesday = 'TUESDAY',
+  Wednesday = 'WEDNESDAY'
+}
+
 export type WssRecipient = {
   document?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
@@ -3137,6 +3235,36 @@ export type UpdateProjectVistMutationVariables = Exact<{
 
 
 export type UpdateProjectVistMutation = { __typename?: 'Mutation', updateProjectVist: { __typename?: 'VisitProject', id: string } };
+
+export type SchudelesQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindScheduleOrderBy> | FindScheduleOrderBy>;
+  where?: InputMaybe<FindScheduleWhere>;
+  pagination?: InputMaybe<Pagination>;
+}>;
+
+
+export type SchudelesQuery = { __typename?: 'Query', schudeles: Array<{ __typename?: 'Schedule', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, day: WeekDay, startTime?: string | null, endTime?: string | null, isDayOff: boolean, date: any, user: { __typename?: 'User', id: string, fullName: string, email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null } }>, schudelesCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
+
+export type CreateSchudeleMutationVariables = Exact<{
+  createInput: CreateScheduleDto;
+}>;
+
+
+export type CreateSchudeleMutation = { __typename?: 'Mutation', createSchudele: { __typename?: 'Schedule', id: string } };
+
+export type RemoveSchudeleMutationVariables = Exact<{
+  removeSchudeleId: Scalars['ID'];
+}>;
+
+
+export type RemoveSchudeleMutation = { __typename?: 'Mutation', removeSchudele: { __typename?: 'Schedule', id: string } };
+
+export type UpdateSchudeleMutationVariables = Exact<{
+  updateInput: UpdateScheduleDto;
+}>;
+
+
+export type UpdateSchudeleMutation = { __typename?: 'Mutation', updateSchudele: { __typename?: 'Schedule', id: string } };
 
 export type CreateToolMutationVariables = Exact<{
   createInput: CreateToolInput;
@@ -4043,6 +4171,163 @@ export function useUpdateProjectVistMutation(baseOptions?: Apollo.MutationHookOp
 export type UpdateProjectVistMutationHookResult = ReturnType<typeof useUpdateProjectVistMutation>;
 export type UpdateProjectVistMutationResult = Apollo.MutationResult<UpdateProjectVistMutation>;
 export type UpdateProjectVistMutationOptions = Apollo.BaseMutationOptions<UpdateProjectVistMutation, UpdateProjectVistMutationVariables>;
+export const SchudelesDocument = gql`
+    query Schudeles($orderBy: [FindScheduleOrderBy!], $where: FindScheduleWhere, $pagination: Pagination) {
+  schudeles(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    day
+    startTime
+    endTime
+    isDayOff
+    date
+    user {
+      id
+      fullName
+      email
+      identificationType
+      identificationNumber
+    }
+  }
+  schudelesCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+    `;
+
+/**
+ * __useSchudelesQuery__
+ *
+ * To run a query within a React component, call `useSchudelesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSchudelesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSchudelesQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useSchudelesQuery(baseOptions?: Apollo.QueryHookOptions<SchudelesQuery, SchudelesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SchudelesQuery, SchudelesQueryVariables>(SchudelesDocument, options);
+      }
+export function useSchudelesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SchudelesQuery, SchudelesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SchudelesQuery, SchudelesQueryVariables>(SchudelesDocument, options);
+        }
+export type SchudelesQueryHookResult = ReturnType<typeof useSchudelesQuery>;
+export type SchudelesLazyQueryHookResult = ReturnType<typeof useSchudelesLazyQuery>;
+export type SchudelesQueryResult = Apollo.QueryResult<SchudelesQuery, SchudelesQueryVariables>;
+export const CreateSchudeleDocument = gql`
+    mutation CreateSchudele($createInput: CreateScheduleDto!) {
+  createSchudele(createInput: $createInput) {
+    id
+  }
+}
+    `;
+export type CreateSchudeleMutationFn = Apollo.MutationFunction<CreateSchudeleMutation, CreateSchudeleMutationVariables>;
+
+/**
+ * __useCreateSchudeleMutation__
+ *
+ * To run a mutation, you first call `useCreateSchudeleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSchudeleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSchudeleMutation, { data, loading, error }] = useCreateSchudeleMutation({
+ *   variables: {
+ *      createInput: // value for 'createInput'
+ *   },
+ * });
+ */
+export function useCreateSchudeleMutation(baseOptions?: Apollo.MutationHookOptions<CreateSchudeleMutation, CreateSchudeleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSchudeleMutation, CreateSchudeleMutationVariables>(CreateSchudeleDocument, options);
+      }
+export type CreateSchudeleMutationHookResult = ReturnType<typeof useCreateSchudeleMutation>;
+export type CreateSchudeleMutationResult = Apollo.MutationResult<CreateSchudeleMutation>;
+export type CreateSchudeleMutationOptions = Apollo.BaseMutationOptions<CreateSchudeleMutation, CreateSchudeleMutationVariables>;
+export const RemoveSchudeleDocument = gql`
+    mutation RemoveSchudele($removeSchudeleId: ID!) {
+  removeSchudele(id: $removeSchudeleId) {
+    id
+  }
+}
+    `;
+export type RemoveSchudeleMutationFn = Apollo.MutationFunction<RemoveSchudeleMutation, RemoveSchudeleMutationVariables>;
+
+/**
+ * __useRemoveSchudeleMutation__
+ *
+ * To run a mutation, you first call `useRemoveSchudeleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveSchudeleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeSchudeleMutation, { data, loading, error }] = useRemoveSchudeleMutation({
+ *   variables: {
+ *      removeSchudeleId: // value for 'removeSchudeleId'
+ *   },
+ * });
+ */
+export function useRemoveSchudeleMutation(baseOptions?: Apollo.MutationHookOptions<RemoveSchudeleMutation, RemoveSchudeleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveSchudeleMutation, RemoveSchudeleMutationVariables>(RemoveSchudeleDocument, options);
+      }
+export type RemoveSchudeleMutationHookResult = ReturnType<typeof useRemoveSchudeleMutation>;
+export type RemoveSchudeleMutationResult = Apollo.MutationResult<RemoveSchudeleMutation>;
+export type RemoveSchudeleMutationOptions = Apollo.BaseMutationOptions<RemoveSchudeleMutation, RemoveSchudeleMutationVariables>;
+export const UpdateSchudeleDocument = gql`
+    mutation UpdateSchudele($updateInput: UpdateScheduleDto!) {
+  updateSchudele(updateInput: $updateInput) {
+    id
+  }
+}
+    `;
+export type UpdateSchudeleMutationFn = Apollo.MutationFunction<UpdateSchudeleMutation, UpdateSchudeleMutationVariables>;
+
+/**
+ * __useUpdateSchudeleMutation__
+ *
+ * To run a mutation, you first call `useUpdateSchudeleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSchudeleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSchudeleMutation, { data, loading, error }] = useUpdateSchudeleMutation({
+ *   variables: {
+ *      updateInput: // value for 'updateInput'
+ *   },
+ * });
+ */
+export function useUpdateSchudeleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSchudeleMutation, UpdateSchudeleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSchudeleMutation, UpdateSchudeleMutationVariables>(UpdateSchudeleDocument, options);
+      }
+export type UpdateSchudeleMutationHookResult = ReturnType<typeof useUpdateSchudeleMutation>;
+export type UpdateSchudeleMutationResult = Apollo.MutationResult<UpdateSchudeleMutation>;
+export type UpdateSchudeleMutationOptions = Apollo.BaseMutationOptions<UpdateSchudeleMutation, UpdateSchudeleMutationVariables>;
 export const CreateToolDocument = gql`
     mutation CreateTool($createInput: CreateToolInput!) {
   createTool(createInput: $createInput) {

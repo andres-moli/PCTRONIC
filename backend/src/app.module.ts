@@ -24,6 +24,7 @@ import { AcceptLanguageResolver, GraphQLWebsocketResolver, HeaderResolver, I18nM
 import { LanguageInterceptor } from './common/i18n/decorators/language.decorator';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { PubSub } from 'graphql-subscriptions';
+import { DateResolver } from 'graphql-scalars';
 
 @Module({
   imports: [
@@ -73,7 +74,7 @@ import { PubSub } from 'graphql-subscriptions';
           path: '/graphql',
         },
       },
-      resolvers: { ValidatePassword: CustomPasswordScalar },
+      resolvers: { ValidatePassword: CustomPasswordScalar, Date: DateResolver, },
       formatError: (formatttedError, error: any) => {
           return {
             message: formatttedError.message,

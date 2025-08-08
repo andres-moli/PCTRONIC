@@ -17,6 +17,7 @@ import { useSigninMutation } from '../../graphql/generated/graphql';
 import { ToastyErrorGraph } from '../../graphql';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SESSION_COOKIE_KEY } from '../../graphql/client';
+import useUser from '../../context/useUser';
 
 const { color } = useColor();
 
@@ -27,7 +28,7 @@ const LoginScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const [login] = useSigninMutation()
-
+  const {saveUser} = useUser();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -53,6 +54,7 @@ const LoginScreen: React.FC = () => {
         }
       })
       await AsyncStorage.setItem(SESSION_COOKIE_KEY, res.data?.signin.token || "");
+      await saveUser(res.data?.signin.user)
       navigation.reset({
         index: 0,
         routes: [{ name: 'MainTabs' }],

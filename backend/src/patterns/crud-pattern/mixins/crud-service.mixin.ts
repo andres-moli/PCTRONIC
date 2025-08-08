@@ -49,7 +49,14 @@ export function
     class CrudService 
         extends DataService(entityType,findArgsType,contextType)
         implements ICrudService<PrimaryKeyType,EntityType,CreateInputType,UpdateInputType,FindArgsType,ContextType>{
-      
+        /**
+         * * Creates a new entity in the database.
+         * 
+         * @param context 
+         * @param createInput 
+         * @param eventHandler 
+         * @returns 
+         */
         async create(
             context:ContextType,
             createInput: CreateInputType,
@@ -95,7 +102,15 @@ export function
 
             return primaryKey;
         }
-    
+        /**
+         * 
+         * * Updates an existing entity in the database.
+         * @param context 
+         * @param id 
+         * @param updateInput 
+         * @param eventHandler 
+         * @returns 
+         */
         async update(
             context:ContextType,
             id: PrimaryKeyType, 
@@ -120,6 +135,13 @@ export function
     
             return responseEntity;
         } 
+        /**
+         * * Removes an entity from the database.
+         * @param context 
+         * @param id 
+         * @param eventHandler 
+         * @returns 
+         */
     
         async remove(
             context:ContextType,
@@ -156,18 +178,57 @@ export function
 
         
     
-        //these methos exists to be overriden 
+        /**
+         * 
+         * * Executes before (ANTES) creating an entity.
+         * @param context 
+         * @param repository 
+         * @param entity 
+         * @param createInput 
+         */
         async beforeCreate(context:ContextType,repository: Repository<EntityType>,entity: EntityType,createInput: CreateInputType) : Promise<void>
         { }
+        /**
+         * * Executes before (ANTES) updating an entity.
+         * @param context 
+         * @param repository 
+         * @param entity 
+         * @param updateInput 
+         */
         async beforeUpdate(context:ContextType,repository: Repository<EntityType>,entity: EntityType,updateInput: UpdateInputType) : Promise<void>
         { }
+        /**
+         * * Executes before (ANTES) removing an entity.
+         * @param context 
+         * @param repository 
+         * @param entity 
+         */
         async beforeRemove(context:ContextType,repository: Repository<EntityType>,entity: EntityType) : Promise<void>
         { }
-    
+        /**
+         * * Executes after (DESPUES) creating an entity.
+         * @param context 
+         * @param repository 
+         * @param entity 
+         * @param createInput 
+         */
         async afterCreate(context:ContextType,repository: Repository<EntityType>,entity: EntityType,createInput: CreateInputType) : Promise<void>
         { }
+        /**
+         * * Executes after (DESPUES) updating an entity.
+         * @param context 
+         * @param repository 
+         * @param entity 
+         * @param updateInput 
+         */
         async afterUpdate(context:ContextType,repository: Repository<EntityType>,entity: EntityType,updateInput: UpdateInputType) : Promise<void>
         { }
+        /**
+         * * Executes after (DESPUES) removing an entity.
+         * @param context 
+         * @param repository 
+         * @param entity 
+         */
         async afterRemove(context:ContextType,repository: Repository<EntityType>,entity: EntityType) : Promise<void>
         { }
 

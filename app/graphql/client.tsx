@@ -3,10 +3,11 @@ import { ApolloClient, HttpLink, from, InMemoryCache } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { URL_API } from '../Constants/url';
 
 
 // URL del servidor GraphQL
-const GRAPHQL_URL = 'https://89qpvk6w-3075.use.devtunnels.ms/graphql'; // Usa tu URL real
+const GRAPHQL_URL = URL_API + 'graphql'; // Usa tu URL real
 export const SESSION_COOKIE_KEY = 'your_session_cookie_key'; // Ajusta según tu clave
 export const USER_COOKIES_ROLE = "user_cookies_rol"
 // Configuración del enlace HTTP para Apollo Client

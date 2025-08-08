@@ -16,6 +16,7 @@ import DocumentPage from '../pages/document/document';
 import DocumentUserPage from '../pages/document/document-user';
 import VisitTypePage from '../pages/visit-tpe';
 import ProyectPage from '../pages/project';
+import CalendarPage from '../pages/calendar';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -110,7 +111,12 @@ const AppRoutes: React.FC = () => {
             <MapMultiplePage/>
           }
         />
-        
+        <Route
+          path="/calendar"
+          element={
+            <ProtectedRoute element={<CalendarPage />} />
+          }
+        />
       </Routes>
     </Router>
   );

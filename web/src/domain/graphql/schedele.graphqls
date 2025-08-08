@@ -1,0 +1,41 @@
+query Schudeles($orderBy: [FindScheduleOrderBy!], $where: FindScheduleWhere, $pagination: Pagination) {
+  schudeles(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    day
+    startTime
+    endTime
+    isDayOff
+    date
+    user {
+      id
+      fullName
+      email
+      identificationType
+      identificationNumber
+    }
+  }
+  schudelesCount(orderBy: $orderBy, where: $where, pagination: $pagination) {
+    currentPage
+    itemsPerPage
+    totalItems
+    totalPages
+  }
+}
+mutation CreateSchudele($createInput: CreateScheduleDto!) {
+  createSchudele(createInput: $createInput) {
+    id
+  }
+}
+mutation RemoveSchudele($removeSchudeleId: ID!) {
+  removeSchudele(id: $removeSchudeleId) {
+    id
+  }
+}
+mutation UpdateSchudele($updateInput: UpdateScheduleDto!) {
+  updateSchudele(updateInput: $updateInput) {
+    id
+  }
+}

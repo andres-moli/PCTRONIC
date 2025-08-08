@@ -7,8 +7,9 @@ import { FletesModule } from './fletes/fletes.module';
 import { ToolsModule } from './tools/tools.module';
 import { DocumentosModule } from './doc/doc.module';
 import { VisitProjectModule } from './visti-proyect/visit-project.module';
+import { SchudeleModule } from './schudele/schudele.module';
 
 @Module({
-  imports: [VisitModule, VisitComentModule,VisitTypeModule, FletesModule,ToolsModule,DocumentosModule,VisitProjectModule]
+  imports: [VisitModule, VisitComentModule,VisitTypeModule, FletesModule,ToolsModule,DocumentosModule,VisitProjectModule,SchudeleModule]
 })
 export class SellerModule {}
