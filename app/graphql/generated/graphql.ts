@@ -15,6 +15,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  Date: { input: any; output: any; }
   DateTime: { input: any; output: any; }
   ValidatePassword: { input: any; output: any; }
 };
@@ -262,6 +263,15 @@ export type CreateProfileInput = {
 export type CreateRoleInput = {
   description: Scalars['String']['input'];
   name: Scalars['String']['input'];
+};
+
+export type CreateScheduleDto = {
+  date: Scalars['DateTime']['input'];
+  day: WeekDay;
+  endTime?: InputMaybe<Scalars['String']['input']>;
+  isDayOff?: Scalars['Boolean']['input'];
+  startTime?: InputMaybe<Scalars['String']['input']>;
+  userId: Scalars['String']['input'];
 };
 
 export type CreateTipoDocumentoInput = {
@@ -614,6 +624,22 @@ export type FindFletesWhere = {
   status?: InputMaybe<StringFilter>;
 };
 
+export type FindScheduleOrderBy = {
+  createdAt?: InputMaybe<OrderTypes>;
+  day?: InputMaybe<OrderTypes>;
+  startTime?: InputMaybe<OrderTypes>;
+};
+
+export type FindScheduleWhere = {
+  _and?: InputMaybe<Array<FindScheduleWhere>>;
+  _or?: InputMaybe<Array<FindScheduleWhere>>;
+  day?: InputMaybe<DateFilter>;
+  endTime?: InputMaybe<StringFilter>;
+  isDayOff?: InputMaybe<BooleanFilter>;
+  startTime?: InputMaybe<StringFilter>;
+  user?: InputMaybe<StringFilter>;
+};
+
 export type FindToolOrderBy = {
   createdAt?: InputMaybe<OrderTypes>;
 };
@@ -872,6 +898,7 @@ export type Mutation = {
   createProjectVist: VisitProject;
   createRole: Role;
   createRoleFx: Array<RoleFx>;
+  createSchudele: Schedule;
   createTipoDocumento: TipoDocumento;
   createTool: Tool;
   createToolItem: ToolUnit;
@@ -905,6 +932,7 @@ export type Mutation = {
   removeProjectVist: VisitProject;
   removeRole: Role;
   removeRoleFx: Array<Scalars['String']['output']>;
+  removeSchudele: Schedule;
   removeTipoDocumento: TipoDocumento;
   removeTool: Tool;
   removeToolItem: ToolUnit;
@@ -943,6 +971,7 @@ export type Mutation = {
   updateProfile: Profile;
   updateProjectVist: VisitProject;
   updateRole: Role;
+  updateSchudele: Schedule;
   updateTipoDocumento: TipoDocumento;
   updateTool: Tool;
   updateToolItem: ToolUnit;
@@ -1059,6 +1088,11 @@ export type MutationCreateRoleArgs = {
 
 export type MutationCreateRoleFxArgs = {
   createRoleFxInput: CreateAndRemoveRoleFxInput;
+};
+
+
+export type MutationCreateSchudeleArgs = {
+  createInput: CreateScheduleDto;
 };
 
 
@@ -1219,6 +1253,11 @@ export type MutationRemoveRoleArgs = {
 
 export type MutationRemoveRoleFxArgs = {
   removeRoleFxInput: CreateAndRemoveRoleFxInput;
+};
+
+
+export type MutationRemoveSchudeleArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1405,6 +1444,11 @@ export type MutationUpdateProjectVistArgs = {
 
 export type MutationUpdateRoleArgs = {
   updateInput: UpdateRoleInput;
+};
+
+
+export type MutationUpdateSchudeleArgs = {
+  updateInput: UpdateScheduleDto;
 };
 
 
@@ -1698,6 +1742,9 @@ export type Query = {
   rolesCount: MetadataPagination;
   rolesFx: Array<RoleFx>;
   rolesFxCount: MetadataPagination;
+  schudele: Schedule;
+  schudeles: Array<Schedule>;
+  schudelesCount: MetadataPagination;
   sendEmailRecovryPassword: Scalars['String']['output'];
   tipoDocumento: TipoDocumento;
   tiposDocumento: Array<TipoDocumento>;
@@ -2187,6 +2234,25 @@ export type QueryRolesFxCountArgs = {
 };
 
 
+export type QuerySchudeleArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QuerySchudelesArgs = {
+  orderBy?: InputMaybe<Array<FindScheduleOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindScheduleWhere>;
+};
+
+
+export type QuerySchudelesCountArgs = {
+  orderBy?: InputMaybe<Array<FindScheduleOrderBy>>;
+  pagination?: InputMaybe<Pagination>;
+  where?: InputMaybe<FindScheduleWhere>;
+};
+
+
 export type QuerySendEmailRecovryPasswordArgs = {
   email: Scalars['String']['input'];
 };
@@ -2332,6 +2398,20 @@ export enum RouterType {
   InternalRouteWithArguments = 'InternalRouteWithArguments',
   InternaltRoute = 'InternaltRoute'
 }
+
+export type Schedule = {
+  __typename?: 'Schedule';
+  createdAt: Scalars['DateTime']['output'];
+  date: Scalars['Date']['output'];
+  day: WeekDay;
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  endTime?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  isDayOff: Scalars['Boolean']['output'];
+  startTime?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+  user: User;
+};
 
 export type SendDoubleVerificationInput = {
   email?: InputMaybe<Scalars['String']['input']>;
@@ -2692,6 +2772,14 @@ export type UpdateRoleInput = {
   name?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateScheduleDto = {
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  day?: InputMaybe<WeekDay>;
+  endTime?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  startTime?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateStatusInput = {
   dateVisit: Scalars['DateTime']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
@@ -3030,6 +3118,16 @@ export enum VisitTypeStatusEnum {
   Inactive = 'INACTIVE'
 }
 
+export enum WeekDay {
+  Friday = 'FRIDAY',
+  Monday = 'MONDAY',
+  Saturday = 'SATURDAY',
+  Sunday = 'SUNDAY',
+  Thursday = 'THURSDAY',
+  Tuesday = 'TUESDAY',
+  Wednesday = 'WEDNESDAY'
+}
+
 export type WssRecipient = {
   document?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -3070,6 +3168,14 @@ export type ValidateUserTokenQueryVariables = Exact<{
 
 
 export type ValidateUserTokenQuery = { __typename?: 'Query', validateUserToken: { __typename?: 'User', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, name?: string | null, middleName?: string | null, lastName?: string | null, secondSurname?: string | null, email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null, phoneNumber?: string | null, address?: string | null, confirmationCode?: string | null, position?: string | null, status: UserStatusTypes, phoneVerification: boolean, emailVerification: boolean, type: UserTypes, fullName: string } };
+
+export type SchudelesQueryVariables = Exact<{
+  orderBy?: InputMaybe<Array<FindScheduleOrderBy> | FindScheduleOrderBy>;
+  where?: InputMaybe<FindScheduleWhere>;
+}>;
+
+
+export type SchudelesQuery = { __typename?: 'Query', schudeles: Array<{ __typename?: 'Schedule', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, day: WeekDay, startTime?: string | null, endTime?: string | null, isDayOff: boolean, date: any, user: { __typename?: 'User', id: string, fullName: string, email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null } }> };
 
 export type ProjectVistsQueryVariables = Exact<{
   where?: InputMaybe<FindVisitProjectWhere>;
@@ -3397,6 +3503,62 @@ export type ValidateUserTokenQueryHookResult = ReturnType<typeof useValidateUser
 export type ValidateUserTokenLazyQueryHookResult = ReturnType<typeof useValidateUserTokenLazyQuery>;
 export type ValidateUserTokenSuspenseQueryHookResult = ReturnType<typeof useValidateUserTokenSuspenseQuery>;
 export type ValidateUserTokenQueryResult = Apollo.QueryResult<ValidateUserTokenQuery, ValidateUserTokenQueryVariables>;
+export const SchudelesDocument = gql`
+    query Schudeles($orderBy: [FindScheduleOrderBy!], $where: FindScheduleWhere) {
+  schudeles(orderBy: $orderBy, where: $where) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    day
+    startTime
+    endTime
+    isDayOff
+    date
+    user {
+      id
+      fullName
+      email
+      identificationType
+      identificationNumber
+    }
+  }
+}
+    `;
+
+/**
+ * __useSchudelesQuery__
+ *
+ * To run a query within a React component, call `useSchudelesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSchudelesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSchudelesQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useSchudelesQuery(baseOptions?: Apollo.QueryHookOptions<SchudelesQuery, SchudelesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SchudelesQuery, SchudelesQueryVariables>(SchudelesDocument, options);
+      }
+export function useSchudelesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SchudelesQuery, SchudelesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SchudelesQuery, SchudelesQueryVariables>(SchudelesDocument, options);
+        }
+export function useSchudelesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SchudelesQuery, SchudelesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SchudelesQuery, SchudelesQueryVariables>(SchudelesDocument, options);
+        }
+export type SchudelesQueryHookResult = ReturnType<typeof useSchudelesQuery>;
+export type SchudelesLazyQueryHookResult = ReturnType<typeof useSchudelesLazyQuery>;
+export type SchudelesSuspenseQueryHookResult = ReturnType<typeof useSchudelesSuspenseQuery>;
+export type SchudelesQueryResult = Apollo.QueryResult<SchudelesQuery, SchudelesQueryVariables>;
 export const ProjectVistsDocument = gql`
     query ProjectVists($where: FindVisitProjectWhere, $orderBy: [FindVisitProjectOrderBy!]) {
   projectVists(where: $where, orderBy: $orderBy) {

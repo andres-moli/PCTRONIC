@@ -1,5 +1,5 @@
 // apolloClient.ts
-import { ApolloClient, HttpLink, from, InMemoryCache } from '@apollo/client';
+import { ApolloClient, HttpLink, from, InMemoryCache, ApolloLink } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,6 +10,41 @@ import { URL_API } from '../Constants/url';
 const GRAPHQL_URL = URL_API + 'graphql'; // Usa tu URL real
 export const SESSION_COOKIE_KEY = 'your_session_cookie_key'; // Ajusta según tu clave
 export const USER_COOKIES_ROLE = "user_cookies_rol"
+const loggerLink = new ApolloLink((operation, forward) => {
+  console.log(
+    `%c📤 GraphQL Request: %c${operation.operationName}`,
+    "color: blue; font-weight: bold;",
+    "color: black;"
+  );
+
+  console.log("Query:");
+  console.log(operation.query.loc?.source.body);
+
+  console.log("Variables:");
+  console.log(JSON.stringify(operation.variables, null, 2));
+
+
+  return forward(operation).map((response) => {
+    console.log(
+      `%c📥 GraphQL Response: %c${operation.operationName}`,
+      "color: green; font-weight: bold;",
+      "color: black;"
+    );
+
+    console.log("Data:");
+    console.log(JSON.stringify(response.data, null, 2));
+
+    if (response.errors) {
+      console.log("Errors:");
+      console.log(JSON.stringify(response.errors, null, 2));
+    }
+
+    console.groupEnd();
+
+    return response;
+  });
+});
+
 // Configuración del enlace HTTP para Apollo Client
 const httpLink = new HttpLink({
   uri: GRAPHQL_URL,
@@ -48,7 +83,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 // Configuración del Apollo Client
 const client = new ApolloClient({
-  link: from([authLink, errorLink, httpLink]),
+  link: from([loggerLink,authLink, errorLink, httpLink]),
   cache: new InMemoryCache(),
 });
 export default client

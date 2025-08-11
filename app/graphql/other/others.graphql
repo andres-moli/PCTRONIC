@@ -1,0 +1,20 @@
+query Schudeles($orderBy: [FindScheduleOrderBy!], $where: FindScheduleWhere) {
+  schudeles(orderBy: $orderBy, where: $where) {
+    id
+    createdAt
+    updatedAt
+    deletedAt
+    day
+    startTime
+    endTime
+    isDayOff
+    date
+    user {
+      id
+      fullName
+      email
+      identificationType
+      identificationNumber
+    }
+  }
+}

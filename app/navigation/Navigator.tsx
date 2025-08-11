@@ -33,6 +33,7 @@ import MapComponentMultiple from '../screens/Map/MapMultiple';
 import MapAndoridComponent from '../screens/Map/MapAndroid';
 import OpenLinkInApp from '../screens/dummy';
 import MapAndoridScreen from '../screens/Map/MapAndroid';
+import { ScheduleScreen } from '../screens/Profile/ScheduleScreen';
 const { color } = useColor();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -383,6 +384,26 @@ const Navigator = () => {
               marginRight: 0, // Elimina margen a la derecha para centrar mejor
             },
             title: 'Acerca de la app',
+            headerBackTitleVisible: false
+          }} // Título para el encabezado
+        />
+        <Stack.Screen
+          name="ScheduleScreen"
+          component={ScheduleScreen}
+          options={{ 
+            headerShown: true,
+            headerStyle: {
+              backgroundColor: color.primary,
+            },
+            headerTintColor: color.lightBeige,
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 15, // Aumenta el tamaño de la fuente
+              textAlign: 'center', // Centra el texto
+              marginLeft: 0, // Elimina margen a la izquierda para centrar mejor
+              marginRight: 0, // Elimina margen a la derecha para centrar mejor
+            },
+            title: 'Horario',
             headerBackTitleVisible: false
           }} // Título para el encabezado
         />

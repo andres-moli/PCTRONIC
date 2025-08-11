@@ -3,11 +3,12 @@ import { StringFilter } from 'src/patterns/crud-pattern/classes/inputs/string-fi
 import { BooleanFilter } from 'src/patterns/crud-pattern/classes/inputs/boolean-filter.input';
 import { OrderByTypes } from 'src/patterns/crud-pattern/enums/order-by-type.enum';
 import { FindArgs } from 'src/patterns/crud-pattern/mixins/find-args.mixin';
+import { DateFilter } from 'src/patterns/crud-pattern/classes/inputs/date-filter.input';
 
 @InputType({ isAbstract: true })
 class FindScheduleWhere {
-  @Field(() => StringFilter, { nullable: true })
-  day?: StringFilter;
+  @Field(() => DateFilter, { nullable: true })
+  day?: DateFilter;
 
   @Field(() => StringFilter, { nullable: true })
   startTime?: StringFilter;

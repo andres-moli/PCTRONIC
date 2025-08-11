@@ -257,7 +257,7 @@ const TableReport = ({ data }: { data: VisitComent[] }) => {
     const key = `${user.id}-${type?.id || "unknown"}`;
     if (!groupedByUserAndType.has(key)) {
       groupedByUserAndType.set(key, {
-        userName: user.name,
+        userName: user?.name + ' ' + user?.lastName,
         visitTypeName: type?.name || "Tipo no encontrado",
         totalMinutes: 0,
         records: [],

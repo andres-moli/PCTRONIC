@@ -55,12 +55,12 @@ const ProfileScreen = () => {
           description="Realiza cambios en tu cuenta" 
           screen="AccountScreen"
         />
-        {/* <OptionItem
-          icon="account-multiple"
-          title="Mis permisos"
-          description="Gestiona tus permisos"
-          screen="PermissionsScreen"
-        /> */}
+        <OptionItem
+          icon="calendar"
+          title="Mi horario"
+          description="Gestiona tus horarios"
+          screen="ScheduleScreen"
+        />
         <OptionItem
           icon="fingerprint"
           title="Face ID / Touch ID"

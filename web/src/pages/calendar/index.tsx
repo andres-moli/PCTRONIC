@@ -59,11 +59,12 @@ const CalendarPage: React.FC = () => {
     if (!data?.schudeles) return [];
     // @ts-ignore
     return data.schudeles.map((s: Schedule) => {
-      const userColor = colorMap[s.user.id] || "#3b82f6"; // fallback color (azul)
-
+    const userColor = s.isDayOff
+      ? "#9CA3AF" // gris si es día libre
+      : colorMap[s.user.id] || "#3b82f6"; // color asignado por usuario o azul por defecto
       return {
         id: s.id,
-        title: `${s.user.fullName}`,
+        title: `${s.user.fullName} ${s.isDayOff ? "(LIBRE)" : ''}`,
         start: `${s.date}T${s.startTime}`,
         end: `${s.date}T${s.endTime}`,
         backgroundColor: userColor,
