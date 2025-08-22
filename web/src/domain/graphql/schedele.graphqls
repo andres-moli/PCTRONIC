@@ -9,6 +9,7 @@ query Schudeles($orderBy: [FindScheduleOrderBy!], $where: FindScheduleWhere, $pa
     endTime
     isDayOff
     date
+    description
     user {
       id
       fullName

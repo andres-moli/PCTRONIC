@@ -26,6 +26,7 @@ const ModalCreateSchedule: React.FC<ModalCreateScheduleProps> = ({
     startTime: undefined,
     endTime: undefined,
     isDayOff: false,
+    description: "",
   });
 
   const handleChange = (
@@ -71,6 +72,7 @@ const ModalCreateSchedule: React.FC<ModalCreateScheduleProps> = ({
             endTime: dayjs(formData.date).endOf('day').format("HH:mm"),
             isDayOff: formData.isDayOff,
             userId: selectUser,
+            description: formData.description
             // Puedes guardar `date: formData.date` si tu schema lo permite
           },
         },
@@ -92,6 +94,7 @@ const ModalCreateSchedule: React.FC<ModalCreateScheduleProps> = ({
         startTime: undefined,
         endTime: undefined,
         isDayOff: false,
+        description: ""
       });
 
       onClose();
@@ -151,6 +154,18 @@ const ModalCreateSchedule: React.FC<ModalCreateScheduleProps> = ({
               />
             </div>
           </div> */}
+
+          <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Descripción</label>
+              <input
+                type="text"
+                value={formData.description}
+                name="description"
+                onChange={handleChange}
+                className="w-full border border-gray-300 p-2 rounded-md"
+                required
+              />
+          </div>
 
           <div className="mb-4">
             <label className="inline-flex items-center">

@@ -64,7 +64,7 @@ const CalendarPage: React.FC = () => {
       : colorMap[s.user.id] || "#3b82f6"; // color asignado por usuario o azul por defecto
       return {
         id: s.id,
-        title: `${s.user.fullName} ${s.isDayOff ? "(LIBRE)" : ''}`,
+        title: `${s.user.fullName} ${s.isDayOff ? "(LIBRE)" : ''} (${s.description || ''})`,
         start: `${s.date}T${s.startTime}`,
         end: `${s.date}T${s.endTime}`,
         backgroundColor: userColor,
@@ -164,6 +164,13 @@ const CalendarPage: React.FC = () => {
               eventDrop={handleEventDrop}
               editable={true}
               eventBorderColor="#000"
+              eventContent={(arg) => {
+                return (
+                  <div style={{ whiteSpace: "normal" }}>
+                    {arg.event.title}
+                  </div>
+                )
+              }}
             />
           </div>
         )}

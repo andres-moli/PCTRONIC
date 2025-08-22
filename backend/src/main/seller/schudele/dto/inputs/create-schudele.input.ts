@@ -22,7 +22,10 @@ export class CreateScheduleDto {
   @IsOptional()
   @IsString()
   endTime?: string;
-
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  description?: string
   @Field(() => Boolean, { defaultValue: false })
   @IsOptional()
   @IsBoolean()

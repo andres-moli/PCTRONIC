@@ -16,6 +16,10 @@ export class Schedule extends CrudEntity {
   @Index()
   @Field(() => DateResolver)
   date: Date;
+  
+  @Column({nullable: true })
+  @Field(() => String, { nullable: true })  
+  description?: string;
 
   @Column({ type: 'time', nullable: true })
   @Field(() => String, { nullable: true })  

@@ -266,6 +266,7 @@ export type CreateRoleInput = {
 export type CreateScheduleDto = {
   date: Scalars['DateTime'];
   day: WeekDay;
+  description?: InputMaybe<Scalars['String']>;
   endTime?: InputMaybe<Scalars['String']>;
   isDayOff?: Scalars['Boolean'];
   startTime?: InputMaybe<Scalars['String']>;
@@ -631,7 +632,7 @@ export type FindScheduleOrderBy = {
 export type FindScheduleWhere = {
   _and?: InputMaybe<Array<FindScheduleWhere>>;
   _or?: InputMaybe<Array<FindScheduleWhere>>;
-  day?: InputMaybe<StringFilter>;
+  day?: InputMaybe<DateFilter>;
   endTime?: InputMaybe<StringFilter>;
   isDayOff?: InputMaybe<BooleanFilter>;
   startTime?: InputMaybe<StringFilter>;
@@ -2403,6 +2404,7 @@ export type Schedule = {
   date: Scalars['Date'];
   day: WeekDay;
   deletedAt?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
   endTime?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   isDayOff: Scalars['Boolean'];
@@ -3243,7 +3245,7 @@ export type SchudelesQueryVariables = Exact<{
 }>;
 
 
-export type SchudelesQuery = { __typename?: 'Query', schudeles: Array<{ __typename?: 'Schedule', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, day: WeekDay, startTime?: string | null, endTime?: string | null, isDayOff: boolean, date: any, user: { __typename?: 'User', id: string, fullName: string, email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null } }>, schudelesCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
+export type SchudelesQuery = { __typename?: 'Query', schudeles: Array<{ __typename?: 'Schedule', id: string, createdAt: any, updatedAt: any, deletedAt?: any | null, day: WeekDay, startTime?: string | null, endTime?: string | null, isDayOff: boolean, date: any, description?: string | null, user: { __typename?: 'User', id: string, fullName: string, email: string, identificationType?: UserDocumentTypes | null, identificationNumber?: string | null } }>, schudelesCount: { __typename?: 'MetadataPagination', currentPage?: number | null, itemsPerPage?: number | null, totalItems?: number | null, totalPages?: number | null } };
 
 export type CreateSchudeleMutationVariables = Exact<{
   createInput: CreateScheduleDto;
@@ -4183,6 +4185,7 @@ export const SchudelesDocument = gql`
     endTime
     isDayOff
     date
+    description
     user {
       id
       fullName
